@@ -1,0 +1,45 @@
+body {
+  text-align: center; }
+
+#info {
+  font-size: 1.1em;
+  display: inline-block;
+  margin: 3em 0 2em;
+  padding: 1em;
+  width: 30em;
+  text-align: left;
+  background: #ffffff;
+  border-radius: 5px; }
+  #info h2 {
+    margin: 0; }
+  #info ul {
+    font-size: 0.9em;
+    list-style-type: square;
+    padding: 0 0 0 1em;
+    white-space: normal; }
+    #info ul li {
+      margin: 0 0 1em 0; }
+      #info ul li .strong {
+        font-weight: 500; }
+  #info p .example-left {
+    display: inline-block;
+    width: 3.5em;
+    font-weight: 700; }
+
+#form {
+  font-size: 1.1em;
+  display: inline-block;
+  margin: 0;
+  width: 32em;
+  text-align: left; }
+  #form h3 {
+    margin: 0.2em 0; }
+  #form #title {
+    width: 97%;
+    margin: 0 0 1em 0; }
+  #form #summary {
+    width: 97%; }
+  #form button {
+    width: 100%; }
+
+/*# sourceMappingURL=newentry.css.map */

@@ -1,0 +1,68 @@
+@import "variables.scss";
+
+body {
+	text-align:			center;
+}
+
+#info {
+	font-size:			1.1em;
+	display:			inline-block;
+	margin:				3em 0 2em;
+	padding:			1em;
+	width:				30em;
+	text-align:			left;
+	background:			$color-background;
+	border-radius:		5px;
+
+	h2 {
+		margin:			0;
+	}
+
+	ul {
+		font-size:			0.9em;
+		list-style-type:	square;
+		padding:			0 0 0 1em;
+		white-space: 		normal;
+
+		li {
+			margin:			0 0 1em 0;
+
+			.strong {
+				font-weight: 	500;
+			}
+		}
+	}
+
+	p {
+		.example-left {
+			display:		inline-block;
+			width:			3.5em;
+			font-weight: 	700;
+		}
+	}
+}
+
+#form {
+	font-size:			1.1em;
+	display:			inline-block;
+	margin:				0;
+	width:				32em;
+	text-align:			left;
+
+	h3 {
+		margin:			0.2em 0;
+	}
+
+	#title {
+		width:			97%;
+		margin:			0 0 1em 0;
+	}
+
+	#summary {
+		width:			97%;
+	}
+
+	button {
+		width:			100%;
+	}
+}

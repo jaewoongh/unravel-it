@@ -1,0 +1,81 @@
+@import "variables.scss";
+
+body {
+	background:		$color-background;
+	white-space:	normal;
+	font-size:		1.1em;
+}
+
+#revision-history-info {
+	font-size: 		1.2em;
+	margin:			0.5em 0 0.5em 0;
+	float:			left;
+}
+
+#revision-history-timeline-button {
+	font-size:		0.8em;
+	margin:			0.5em 1em 0.2em;
+	padding:		0.5em;
+	float: 			left;
+}
+
+#revision-history-list {
+	list-style-type:	none;
+	margin:				0.5em 0;
+	padding:			0;
+	width:				100%;
+	clear:				left;
+
+	.revision-history-item {
+		background:		$color-shade;
+		margin:			0.4em 0;
+		padding:		0.8em;
+		font-size: 		0.9em;
+
+		.revision-history-what {
+			font-weight: 	500;
+			font-size:		1.2em;
+			margin-bottom:	0.8em;
+		}
+
+		.revision-history-version {
+			font-size: 		0.9em;
+			font-weight: 	500;
+			margin:			-0.5em 0 0 0;
+			color:			$color-main;
+			float:			left;
+		}
+
+		.revision-history-when {
+			font-size: 		0.9em;
+			font-weight: 	300;
+			margin:			-0.5em 0 0 1em;
+			color:			$color-main;
+			float:			left;
+		}
+
+		.revision-history-note {
+			color:			$color-reverse;
+			background:		$color-main;
+			margin: 		0 -0.3em 0.5em -0.3em;
+			padding:		0.5em 0.5em 0.1em;
+			clear:			left;
+			border-radius:	0.2em;
+		}
+
+		.revision-history-timestamp {
+			font-weight: 	400;
+		}
+
+		.revision-history-title {
+			font-weight: 	400;
+			font-size:		1.2em;
+			margin-bottom:	0.5em;
+		}
+
+		.revision-history-source {
+			font-size:		0.6em;
+			margin-top:		0.6em;
+		}
+	}
+}

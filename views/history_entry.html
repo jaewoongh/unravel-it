@@ -1,0 +1,93 @@
+{{#contentFor "pageHead"}}
+	<link rel="stylesheet" href="/styles/history.css" type="text/css">
+{{/contentFor}}
+
+<div id="revision-history-info">Entry history</div>
+<!-- <button id="revision-history-timeline-button">Timeline View</button> -->
+<ul id="revision-history-list">
+	{{#each history}}
+		<li class="revision-history-item">
+			<div class="revision-history-what">{{ type }}/{{ status }}</div>
+			<div class="revision-history-version">Revision #{{ v }}</div>
+			{{#if @first}}
+				<div class="revision-history-when" data-timestamp="{{get_time _id}}">
+				{{get_time_formatted _id}}
+				</div>
+			{{else}}
+				<div class="revision-history-when" data-timestamp="{{ timeOfCreation }}">
+				{{format_time timeOfCreation}}
+				</div>
+			{{/if}}
+			<div class="revision-history-note">{{ note }}</div>
+			<div class="revision-history-timestamp">{{month validTime timestamp}}{{date validTime timestamp}}{{year validTime timestamp}} {{hour validTime timestamp}}{{minute validTime timestamp}}{{second validTime timestamp}}{{millisecond validTime timestamp}}</div>
+			<div class="revision-history-title">{{ title }}</div>
+			<div class="revision-history-description">{{breaklines description}}</div>
+			<div class="revision-history-source"><a href="http://asdf.asdf">{{ source }}</a></div>
+		</li>
+	{{/each}}
+</ul>
+
+{{#contentFor "pageTail"}}
+	<script type="text/javascript" charset="utf-8">
+		// Make edit time localized
+		var timezoneOffset = new Date().getTimezoneOffset() / -60;
+		var revisionWhen = document.getElementsByClassName('revision-history-when');
+		for (var i = 0; i < revisionWhen.length; i++) {
+			var timestamp = new Date(revisionWhen[i].dataset.timestamp);
+			var localTime = new Date(timestamp.setHours(timestamp.getHours() + timezoneOffset));
+
+			// Format: MMM. DD, YYYY hh:mm:ss
+			revisionWhen[i].innerHTML = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][localTime.getUTCMonth()] + '. ' + localTime.getUTCDate() + ', ' + localTime.getUTCFullYear() + ' ' + ('0' + localTime.getUTCHours()).slice(-2) + ':' + ('0' + localTime.getUTCMinutes()).slice(-2) + ':' + ('0' + localTime.getUTCSeconds()).slice(-2);
+		}
+
+		// Make edit type readable
+		var revisionWhat = document.getElementsByClassName('revision-history-what');
+		var revisionVer = document.getElementsByClassName('revision-history-version');
+		for (var i = 0; i < revisionWhat.length; i++) {
+			var whatAndStatus = revisionWhat[i].innerHTML.match(/^(.+)\/(.+)$/);
+			var what = whatAndStatus[1];
+			var status = whatAndStatus[2];
+			var v = parseInt(revisionVer[i].innerHTML.match(/\d+$/)[0]);
+			if (what == 'tidbit') {
+				if (v == 0) {
+					revisionWhat[i].innerHTML = 'Created the tidbit';
+				} else {
+					if (status == 'published') {
+						revisionWhat[i].innerHTML = 'Edited the tidbit';
+					} else if (status == 'removed') {
+						revisionWhat[i].innerHTML = 'Removed the tidbit';
+					}
+					
+				}
+			} else if (what == 'entry-creation') {
+				revisionWhat[i].innerHTML = 'Created the entry';
+			} else if (what == 'entry-summary') {
+				if (v == 0) {
+					revisionWhat[i].innerHTML = 'Created summary for the entry';
+				} else {
+					if (status == 'published') {
+						revisionWhat[i].innerHTML = 'Edited summary for the entry';
+					} else if (status == 'removed') {
+						revisionWhat[i].innerHTML = 'Removed summary for the entry';
+					}
+				}
+			} else if (what == 'entry-removal') {
+				revisionWhat[i].innerHTML = 'Removed the entry';
+			} else if (what == 'user-creation') {
+				revisionWhat[i].innerHTML = 'Joined the community';
+			} else if (what == 'user-photo') {
+				if (status == 'published') {
+					revisionWhat[i].innerHTML = 'Updated profile picture';
+				} else if (status == 'removed') {
+					revisionWhat[i].innerHTML = 'Removed profile picture';
+				}
+			} else if (what == 'user-about') {
+				if (status == 'published') {
+					revisionWhat[i].innerHTML = 'Updated profile';
+				} else if (status == 'removed') {
+					revisionWhat[i].innerHTML = 'Removed profile';
+				}
+			}
+		}
+	</script>
+{{/contentFor}}

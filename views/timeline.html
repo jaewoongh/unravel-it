@@ -1,0 +1,221 @@
+{{#contentFor "pageHead"}}
+	<link rel="stylesheet" href="/styles/timeline.css" type="text/css">
+	<script src="/scripts/helper.js" type="text/javascript"></script>
+	<script src="/scripts/tidbit.js" type="text/javascript"></script>
+	<script src="/scripts/entry.js" type="text/javascript"></script>
+	<script src="/scripts/timeline.js" type="text/javascript"></script>
+{{/contentFor}}
+
+{{#if error}}
+	<div class="notification-error">{{ error }}</div>
+{{/if}}
+
+<div id="timelineview">
+
+{{#each entry}}
+	<article data-title="{{ title }}" data-id="{{ _id }}" data-slug="{{ slug }}">
+		<!-- TITLE AND SUMMARY -->
+		<header>
+			<div class="inner-header">
+				<h1><a href="/tl/{{ slug }}">{{ title }}</a></h1>
+				<summary>
+					{{#each summary}}
+						{{breaklines description}}
+					{{/each}}
+				</summary>
+
+				<!-- EDIT BAR -->
+				<!-- <div id="edit-entry">
+					<div id="edit-summary">✎ edit</div>
+					<div id="add-tidbit">✚ add</div>
+				</div> -->
+			</div>
+
+			<!-- ICONS -->
+			<div class="entry-iconset">
+				<div class="entry-icon shift-left" title="Shift to the left"></div>
+				<div class="entry-icon shift-right" title="Shift to the right"></div>
+				<div class="entry-icon history" title="Revision history"></div>
+				<div class="entry-icon edit" title="Edit summary"></div>
+				<div class="entry-icon addnew" title="Add new tidbit"></div>
+				<div class="entry-icon close" title="Close this entry"></div>
+			</div>
+		</header>
+
+		<!-- VERTICAL LINE -->
+		<div class="line"></div>
+
+		<!-- LIST OF TIDBITS -->
+		{{#each_tidbit tidbits}}
+			{{#if timestamp}}
+			<section data-column="{{@index}}" data-title="{{ title }}" data-id="{{ docId }}" data-source="{{ source }}" data-time="{{ timestamp }}" data-validtime="{{ validTime }}" data-millisecond="{{millisecond validTime timestamp}}">
+			{{else}}
+			<section data-column="{{@index}}" data-title="{{ title }}" data-id="{{ docId }}" data-source="{{ source }}">
+			{{/if}}
+				<div class="timestamp">
+					{{month validTime timestamp}}{{date validTime timestamp}}{{year validTime timestamp}}<br>
+					<span style="font-size:1.2em;">{{hour validTime timestamp}}{{minute validTime timestamp}}{{second validTime timestamp}}{{millisecond validTime timestamp}}</span>
+				</div>
+				<div class="point"></div>
+				<div class="content">
+					<h3>{{ title }}</h3>
+					{{#if media}}
+						<figure>
+							{{insert media mediaType}}
+						</figure>
+					{{/if}}
+					<div class="details">
+						<div class="description">
+							{{breaklines description}}
+						</div>
+						<footer>
+							{{#if source}}
+								<div class="source">
+									<a href="{{ source }}"><span class="source-icon"></span>{{ source }}</a>
+								</div>
+							{{/if}}
+							<div class="tidbit-iconset">
+								<div class="tidbit-icon history" title="Revision history"></div>
+								<div class="tidbit-icon edit" title="Edit this tidbit"></div>
+							</div>
+							<div class="revision">
+								Revision #{{ v }}
+							</div>
+						</footer>
+					</div>
+				</div>
+			</section>
+		{{/each_tidbit}}
+	</article>
+
+	<!-- STICKY TITLE FOR EACH ENTRY -->
+	<div class="sticky-header">
+		<h3>{{ title }}</h3>
+	</div>
+{{/each}}
+
+<!-- ICON CREDITS -->
+<div id="credits">
+	<hr>
+	<div class="credits-icon">Icons made by <a href="http://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>, <a href="http://www.flaticon.com/authors/robin-kylander" title="Robin Kylander">Robin Kylander</a>, <a href="http://www.flaticon.com/authors/victor-erixon" title="Victor Erixon">Victor Erixon</a>, <a href="http://www.flaticon.com/authors/vectorgraphit" title="Vectorgraphit">Vectorgraphit</a>, <a href="http://www.flaticon.com/authors/stephen-hutchings" title="Stephen Hutchings">Stephen Hutchings</a>, <a href="http://www.flaticon.com/authors/graphicsbay" title="GraphicsBay">GraphicsBay</a>, <a href="http://www.flaticon.com/authors/picol" title="Picol">Picol</a>, <a href="http://www.flaticon.com/authors/icons8" title="Icons8">Icons8</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>&emsp;|&emsp;Additional icons downloaded from <a href="http://iconmonstr.com/">iconmonstr</a></div>
+</div>
+
+<!-- LEFT SEARCH CARD -->
+<div id="left-search-card">
+	<div id="left-searchbox">
+		<div id="left-search-label">Search and put it on current page</div>
+		<input id="left-search-text" type="text" name="search-text">
+		<button id="left-search-button" name="search-button"></button>
+	</div>
+	<ul id="left-searchresult"></ul>
+	<div id="left-search-close" title="Close">✕</div>
+</div>
+
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay"></div>
+
+<!-- EDIT ENTRY FORM -->
+<div id="form-entry">
+	<div id="form-entry-info"><strong>something</strong></div>
+	<form id="form-entry-form" method="POST" autocomplete="off" accept-charset="UTF-8">
+		Edit summary/description<br>
+		<textarea id="summary" name="summary" rows="5" placeholder="Summary or brief description about the topic (optional)"></textarea><br>
+		<span class="label" id="note-label-entry">Revision Note</span>
+		<input type="text" id="note-entry" name="note" title="Revision note" placeholder="What did you change and why must you? (required)" style="font-size:0.8em" required><br id="note-br-entry">
+		<button name="submit" id="submit-entry">Make change</button>
+	</form>
+	<div id="form-entry-close" title="Close">✕</div>
+</div>
+
+<!-- ADD NEW / EDIT TIDBIT FORM -->
+<div id="form-tidbit">
+	<div id="form-tidbit-info">New tidbit for <strong>something</strong></div>
+	<form id="form-tidbit-form" method="POST" autocomplete="off" accept-charset="UTF-8">
+		Title<br>
+		<input type="text" id="title" name="title" placeholder="One-line description" required><br>
+		Description<br>
+		<textarea id="description" name="description" rows="5" placeholder="Need more words? (optional)"></textarea><br>
+		<span class="label">Timestamp</span>
+		<input type="number" class="wide" id="year" name="year" title="Year" placeholder="YYYY" pattern="\d+" min="0" inputmode="numeric" required>
+		<input type="number" class="narrow" id="month" name="month" title="Month" placeholder="MM" pattern="\d{2}" min="1" max="12" inputmode="numeric">
+		<input type="number" class="narrow" id="date" name="date" title="Date" placeholder="DD" pattern="\d{2}" min="0" max="31" inputmode="numeric">
+		<input type="number" class="narrow" id="hour" name="hour" title="Hour" placeholder="HH" pattern="\d{2}" min="0" max="23" inputmode="numeric">
+		<input type="number" class="narrow" id="minute" name="minute" title="Minute" placeholder="MM" pattern="\d{2}" min="0" max="59" inputmode="numeric">
+		<input type="number" class="narrow" id="second" name="second" title="Second" placeholder="SS" pattern="\d{2}" min="0" max="59" inputmode="numeric">
+		<input type="number" class="narrow" id="millisecond" name="millisecond" title="Millisecond" placeholder="MS" pattern="\d{3}" min="0" max="999" inputmode="numeric"><br>
+		<span class="label">Reference</span>
+		<input type="url" id="source" name="source" title="Reference link" placeholder="Credible source link (required)" inputmode="url" required><br>
+		<span class="label" id="note-label">Revision Note</span>
+		<input type="text" id="note" name="note" title="Revision note" placeholder="What did you change and why must you? (required)" style="font-size:0.8em" required><br id="note-br">
+		<button name="submit" id="submit">Add</button>
+	</form>
+	<div id="form-tidbit-close" title="Close">✕</div>
+</div>
+
+<!-- REVISION HISTORY -->
+<div id="revision-history">
+	<iframe id="revision-history-iframe" frameborder="0" seamless></iframe>
+	<div id="revision-history-close" title="Close">✕</div>
+</div>
+
+<!-- TOP NAV BAR -->
+<!-- <div id="top-bar">
+	<div id="top-logo">Unravel-it<span style="font-size:0.3em;color:#999;vertical-align:top;margin-left:0.5em;display:inline-block;white-space:normal;width:3em;">Under Development</span></div>
+	<div id="top-buttons">
+		<button class="top-bar-button" id="zoom-in">Zoom In</button>
+		<button class="top-bar-button" id="zoom-out">Zoom Out</button>
+		<button class="top-bar-button" id="zoom-default">Default</button>
+		<div class="top-bar-gap"></div>
+		<button class="top-bar-button" id="spacing-compact">Compact</button>
+		<button class="top-bar-button" id="spacing-default">Default</button>
+		<button class="top-bar-button" id="spacing-loose">Loose</button>
+		<div class="top-bar-gap"></div>
+		<button class="top-bar-button" id="fold-all">Fold All</button>
+		<button class="top-bar-button" id="expand-all">Expand All</button>
+	</div>
+</div> -->
+
+<!-- TOP SCROLL BAR -->
+<div id="top-scrollbar">
+	<div id="top-scroller"></div>
+</div>
+
+<!-- LEFT NAV BAR -->
+<div id="left-bar">
+	<!-- <div id="left-expanded">
+		<a href="/">
+			<div class="logo">
+				<img class="logo-image" src="/assets/images/logo-white.svg" alt="Logo">
+				<div class="left-logo-text">Unravel-it<span class="version">Alpha</span></div>
+			</div>
+		</a>
+	</div>
+	<div id="left-folded">
+		<img class="logo-image" src="/assets/images/logo-white.svg" alt="Logo">
+	</div> -->
+	<a href="/">
+		<img class="logo-image" src="/assets/images/logo-white.svg" alt="Logo">
+	</a>
+	<!-- <hr> -->
+	<div class="left-bar-label">Search</div>
+	<div class="left-bar-icon" id="left-bar-icon-search" title="Search and add"></div>
+	<div class="left-bar-label">New</div>
+	<a href="/entry/new/"><div class="left-bar-icon" id="left-bar-icon-add" title="Add new entry"></div></a>
+	<hr>
+	<div class="left-bar-label">Reverse</div>
+	<div class="left-bar-icon" id="left-bar-icon-reverse" title="Reverse timescale"></div>
+	<div class="left-bar-label">Fold-all</div>
+	<div class="left-bar-icon" id="left-bar-icon-fold" title="Toggle fold-all"></div>
+	<div class="left-bar-label">Zoom</div>
+	<div class="left-bar-icon" id="left-bar-icon-zoom-in" title="Bigger"></div>
+	<div class="left-bar-icon" id="left-bar-icon-zoom-out" title="Smaller"></div>
+	<div class="left-bar-label">Spacing</div>
+	<div class="left-bar-icon" id="left-bar-icon-gap-less" title="Decrease gaps"></div>
+	<div class="left-bar-icon" id="left-bar-icon-gap-more" title="Increase gaps"></div>
+	<hr>
+	<div class="left-bar-label">Share</div>
+	<div class="left-bar-icon" id="left-bar-icon-twitter" title="Share via Twitter"></div>
+	<div class="left-bar-icon" id="left-bar-icon-facebook" title="Share via Facebook"></div>
+</div>
