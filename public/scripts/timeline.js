@@ -112,6 +112,7 @@ var toggleFold = function() {
 
 // Grab entries and tidbits
 var getThings = function() {
+	// Get entries
 	entries = [];
 	var elemEntries = document.getElementsByTagName('article');
 	for (var i = 0; i < elemEntries.length; i++) {
@@ -119,6 +120,15 @@ var getThings = function() {
 		entries[i].sticky = document.getElementsByClassName('sticky-header')[i];
 	}
 
+	// Change URL - in case of the given url has duplicate slugs
+	var slugs = [];
+	for (var i = 0; i < entries.length; i++) {
+		slugs[entries[i].column] = entries[i].slug;
+	}
+	var newUrl = '/tl/' + slugs.toString().replace(/,/g, '/') + viewString();
+	window.history.replaceState({ urlPath: newUrl }, '', newUrl);
+
+	// Get tidbits
 	tidbits = [];
 	var elemTidbits = document.getElementsByTagName('section');
 	for (var i = 0; i < elemTidbits.length; i++) {
@@ -128,9 +138,11 @@ var getThings = function() {
 		mom.addTidbit(tidbit);
 	}
 
+	// Get scroll thingies
 	scrollbar = document.getElementById('top-scrollbar');
 	scroller = document.getElementById('top-scroller');
 
+	// Get the whole view but for sidebar and scroll thingies
 	timelineView = document.getElementById('timelineview');
 
 	// Set left search bar as an object
@@ -206,14 +218,14 @@ var getThings = function() {
 
 		// Put search results into the bar
 		leftSearchCard.searchResult.innerHTML = '';
-		for (var i = 0; i < result.result.length; i++) {
-			leftSearchCard.resultCard.title.innerHTML = result.result[i].entry.title;
-			leftSearchCard.resultCard.description.innerHTML = result.result[i].entry.summary[0].description;
+		for (var i = 0; i < result.data.length; i++) {
+			leftSearchCard.resultCard.title.innerHTML = result.data[i].entry.title;
+			leftSearchCard.resultCard.description.innerHTML = result.data[i].entry.summary[0].description;
 			var currentSlugs = [];
 			for (var j = 0; j < entries.length; j++) {
 				currentSlugs[entries[j].column] = entries[j].slug;
 			}
-			leftSearchCard.resultCard.element.href = '/tl/' + result.result[i].entry.slug + '/' + currentSlugs.toString().replace(/,/g, '/') + viewString();
+			leftSearchCard.resultCard.element.href = '/tl/' + result.data[i].entry.slug + '/' + currentSlugs.toString().replace(/,/g, '/') + viewString();
 			leftSearchCard.searchResult.appendChild(leftSearchCard.resultCard.element.cloneNode(true));
 		}
 	};
@@ -315,7 +327,7 @@ var setThings = function() {
 				newSlugOrder[entries[i].column] = entries[i].slug;
 			}
 			var newUrl = '/tl/' + newSlugOrder.toString().replace(/,/g, '/') + viewString();
-			window.history.pushState({ urlPath: newUrl }, '', newUrl);
+			window.history.replaceState({ urlPath: newUrl }, '', newUrl);
 		}.bind(entries[i]));
 
 		// Shift to the right button
@@ -346,7 +358,7 @@ var setThings = function() {
 				newSlugOrder[entries[i].column] = entries[i].slug;
 			}
 			var newUrl = '/tl/' + newSlugOrder.toString().replace(/,/g, '/') + viewString();
-			window.history.pushState({ urlPath: newUrl }, '', newUrl);
+			window.history.replaceState({ urlPath: newUrl }, '', newUrl);
 		}.bind(entries[i]));
 
 		// Entry history button
@@ -406,7 +418,7 @@ var setThings = function() {
 			document.getElementById('submit').innerHTML = 'Create new tidbit';
 		}.bind(entries[i]));
 
-		// Close tidbit button
+		// Close entry button
 		entries[i].close.addEventListener('click', function() {
 			if (entries.length <= 1) {
 				this.y += 16;
@@ -458,8 +470,19 @@ var setThings = function() {
 				newSlugOrder[entries[i].column] = entries[i].slug;
 			}
 			var newUrl = '/tl/' + newSlugOrder.toString().replace(/,/g, '/') + viewString();
-			window.history.pushState({ urlPath: newUrl }, '', newUrl);
+			window.history.replaceState({ urlPath: newUrl }, '', newUrl);
 		}.bind(entries[i]));
+	}
+
+	// Related entries
+	var relatedLinks = document.getElementsByClassName('related-topic');
+	for (var i = 0; i < relatedLinks.length; i++) {
+		relatedLinks[i].addEventListener('click', function() {
+			var regexCheckExisting = '\/' + this.dataset.slug + '(\/|$)';
+			if (window.location.pathname.match(regexCheckExisting)) return;
+			window.location.pathname += '/' + this.dataset.slug;
+			console.log(window.location.href);
+		}.bind(relatedLinks[i]));
 	}
 
 	// Tidbits
@@ -621,7 +644,7 @@ var setThings = function() {
 		for (var i = 0; i < entries.length; i++) entries[i].placeSticky(viewZoomLevel);
 	});
 
-	// Others
+	// Close buttons
 	document.getElementById('form-entry-close').addEventListener('click', function() {
 		var overlay = document.getElementById('overlay');
 		var editEntry = document.getElementById('form-entry');
@@ -655,11 +678,6 @@ var setThings = function() {
 	leftSearchCard.closeButton.addEventListener('click', function() {
 		leftSearchCard.putBack();
 	});
-};
-
-var resortEntries = function() {
-	var newOrder = window.location.pathname.match(/\/tl\/(.+[\/$])/);
-	console.log(newOrder);
 };
 
 // Place entries
@@ -799,17 +817,6 @@ var placeTidbits = function() {
 	setArticleHeight();
 	window.setTimeout(setArticleHeight, 200);
 };
-
-window.addEventListener('popstate', function(evt) {
-	console.log(evt.state);
-	if (evt.state) {
-		if (evt.state.urlPath) {
-			console.log(location.href);
-			resortEntries();
-			placeEntries();
-		}
-	}
-});
 
 // Start!
 document.onreadystatechange = function() {

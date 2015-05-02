@@ -1,4 +1,6 @@
-module.exports = function(mongoose, db, slug) {
+module.exports = function(mongoose, db, slug, api) {
+	var USER_TESTER = new mongoose.Types.ObjectId('5544907925288cde3905e0d1');
+
 	// Show timeline(s)
 	var show = function(req, res) {
 		// Fuction for retrieving requested data
@@ -15,6 +17,49 @@ module.exports = function(mongoose, db, slug) {
 				if (++n < entries.length) {
 					load(entries, n);
 				} else {
+					// When done getting data, add relation points
+					for (var i = 0; i < data.length - 1; i++) {
+						for (var j = i + 1; j < data.length; j++) {
+							var found = false;
+							if (!Boolean(data[i].related)) data[i].related = [];
+							for (var k = 0; k < data[i].related.length; k++) {
+								if (data[i].related[k].slug == data[j].slug) {
+									data[i].related[k].point += 1;
+									if (!Boolean(data[j].related)) data[j].related = [];
+									for (var l = 0; l < data[j].related.length; l++) {
+										if (data[j].related[l].slug == data[i].slug) {
+											data[j].related[l].point += 1;
+											break;
+										}
+									}
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								data[i].related.push({
+									title:	data[j].title,
+									slug:	data[j].slug,
+									point:	1
+								});
+								data[j].related.push({
+									title:	data[i].title,
+									slug:	data[i].slug,
+									point:	1
+								});
+							}
+						}
+						data[i].save(function(err, updatedEntry) {
+							if (err) return console.error(err);
+						});
+					}
+					if (data.length > 1) {
+						data[data.length - 1].save(function(err, updatedEntry) {
+							if (err) return console.error(err);
+						});
+					}
+
+					// Render timeline
 					return res.render('timeline', { entry: data });
 				}
 			});
@@ -38,16 +83,11 @@ module.exports = function(mongoose, db, slug) {
 		// Inspect given input
 		if (!Boolean(req.body.title.trim())) {
 			res.render('newentry', { error: "Wait, what was the title?" });
-		} else if (!Boolean(req.body.summary.trim())) {
-			res.render('newentry', { error: "Please summarize what it is about." })
 		} else {
 			console.log('New entry creation requested.');
 			var entryId = new mongoose.Types.ObjectId;
 			var summaryId = new mongoose.Types.ObjectId;
 			var timestamp = summaryId.getTimestamp();
-
-			var fakeUser = new mongoose.Types.ObjectId;
-			var fakeIp = '127.0.0.1';
 
 			// Create summary Tidbit
 			var summary = new db.Tidbit({
@@ -55,8 +95,8 @@ module.exports = function(mongoose, db, slug) {
 				v:				0,
 				momId:			entryId,
 				type:			'entry-summary',
-				editorId:		fakeUser,
-				editorIp:		fakeIp,
+				editorId:		USER_TESTER,
+				editorIp:		req.ip,
 				note:			'First creation',
 				title:			req.body.title.trim(),
 				description:	req.body.summary.trim(),
@@ -71,8 +111,9 @@ module.exports = function(mongoose, db, slug) {
 				v:				0,
 				momId:			entryId,
 				type:			'entry-creation',
-				editorId:		fakeUser,
-				editorIp:		fakeIp,
+				editorId:		USER_TESTER,
+				editorIp:		req.ip,
+				related:		[],
 				note:			'First creation',
 				title:			req.body.title.trim(),
 				status:			'published'
@@ -83,7 +124,7 @@ module.exports = function(mongoose, db, slug) {
 				_id:			entryId,
 				title:			req.body.title.trim(),
 				slug:			slug(req.body.title.trim()).toLowerCase(),
-				creatorId:		fakeUser,
+				creatorId:		USER_TESTER,
 				summary:		[ summary ],
 				tidbits:		[],
 				lastmodified:	timestamp,
@@ -116,20 +157,8 @@ module.exports = function(mongoose, db, slug) {
 						if (err) return console.error(err);
 						console.log('New entry marker has been added to history: ' + history._id);
 
-						// Update the List
-						db.List.findOneAndUpdate({}, {
-							$push: {'entries': {
-									title:		entry.title,
-									slug:		entry.slug,
-									docId:		entry._id,
-									lastEdit:	new Date()
-								}
-							}
-						},
-						{ upsert: true },
-						function(err) {
-							if (err) return console.error(err);
-							console.log('New entry has been added to the List: ' + entry._id);
+						// Update the list
+						api.updateRecentlyEditedEntries(entry, function(updatedList) {
 							res.redirect('/tl/' + entry.slug);
 						});
 					});
@@ -141,10 +170,11 @@ module.exports = function(mongoose, db, slug) {
 
 	// Edit entry
 	var editEntry = function(req, res) {
+		if (!Boolean(req.body.note.trim())) return res.redirect('back');
+
 		// Get current version of entry
 		db.Entry.findOne(
 			{ _id: req.params.docId },
-			{ 'summary': 1 },
 			function(err, result) {
 				if (err) return console.error(err);
 				if (result.summary.length > 0) {
@@ -153,15 +183,13 @@ module.exports = function(mongoose, db, slug) {
 					delete summary._id;
 
 					// New summary
-					var fakeUser = new mongoose.Types.ObjectId;
-					var fakeIp = '127.0.0.1';
 					var newSummary = new db.Tidbit({
 						docId:			summary.docId,
 						v:				summary.v + 1,
 						momId:			req.params.docId,
 						type:			'entry-summary',
-						editorId:		fakeUser,
-						editorIp:		fakeIp,
+						editorId:		USER_TESTER,
+						editorIp:		req.ip,
 						note:			req.body.note.trim(),
 						title:			summary.title,
 						description:	req.body.summary.trim(),
@@ -187,23 +215,14 @@ module.exports = function(mongoose, db, slug) {
 						console.log('Existing entry successfully copied to history: ', history._id);
 
 						// Replace current version
-						db.Entry.update(
-							{ _id: req.params.docId },
-							{ $set: { 'summary': [newSummary] } },
-							function(err, summary) {
-								if (err) return console.error(err);
-								console.log('Entry successfully updated:', result._id);
-
-								// Update the List
-								db.List.update({ 'entries.docId': req.params.docId }, {'$set': {
-									'entries.$.lastEdit': new Date()
-								}}, function(err) {
-									if (err) return console.error(err);
-									console.log('List successfully updated for the entry: ', req.params.docId);
-									res.redirect('back');
-								});
-							}
-						);
+						result.summary = [newSummary];
+						result.lastmodified = new Date();
+						result.save(function(err, replacedEntry) {
+							if (err) return console.error(err);
+							api.updateRecentlyEditedEntries(replacedEntry, function(updatedList) {
+								res.redirect('back');
+							});
+						});
 					});
 				} else {
 					res.redirect('back');
@@ -215,18 +234,9 @@ module.exports = function(mongoose, db, slug) {
 	var entryHistory = function(req, res) {
 		db.Entry.findOne({ _id: req.params.docId }, function(err, result) {
 			if (err) return console.error(err);
-			var currentSummary = result.summary[0];
-			db.History.find(
-				{ momId: result._id, $or: [{type: 'entry-creation'}, {type: 'entry-summary'}, {type: 'entry-removal'}] },
-				null,
-				{ sort: { timeOfCreation: -1 } },
-				function(err, histories) {
-					if (err) return console.error(err);
-					histories.unshift(currentSummary);
-					// res.json(histories);
-					res.render('history_entry', { history: histories });
-				}
-			);
+			api.getRevisionHistoryOfEntry(result, function(history) {
+				res.render('history_entry', { history: history });
+			});
 		});
 	};
 
@@ -274,81 +284,72 @@ module.exports = function(mongoose, db, slug) {
 
 	// Create new tidbit
 	var createTidbit = function(req, res) {
-		console.log('New tidbit requested.');
-		var fakeUser = new mongoose.Types.ObjectId;
-		var fakeIp = '127.0.0.1';
+		if (!Boolean(req.body.title.trim()) || !Boolean(req.body.year) || !Boolean(req.body.source.trim())) res.redirect('back');
 
+		console.log('New tidbit requested.');
 		var newTidbit = new db.Tidbit({
 			docId:			new mongoose.Types.ObjectId,
 			v:				0,
 			momId:			req.params.docId,
 			type:			'tidbit',
-			editorId:		fakeUser,
-			editorIp:		fakeIp,
+			editorId:		USER_TESTER,
+			editorIp:		req.ip,
 			note:			'First creation',
 			title:			req.body.title.trim(),
 			description:	req.body.description.trim(),
 			media:			req.body.media,
 			mediaType:		req.body.mediaType,
-			source:			req.body.source,
+			source:			req.body.source.trim(),
 			timestamp:		createTimestamp(req).timestamp,
 			validTime:		createTimestamp(req).validTime,
 			status:			'published'
 		});
 
-		db.Entry.update(
-			{ _id: req.params.docId },
-			{ $push: { tidbits: newTidbit } },
-			function(err) {
+		db.Entry.findOne({ _id: req.params.docId }, function(err, entry) {
+			if (err) return console.error(err);
+			entry.tidbits.push(newTidbit);
+			entry.lastmodified = new Date();
+			entry.save(function(err, updatedEntry) {
 				if (err) return console.error(err);
 				console.log('Tidbit successfully added to ' + req.params.docId);
 
-				// Update the List
-				db.List.update({ 'entries.docId': req.params.docId }, {'$set': {
-					'entries.$.lastEdit': new Date()
-				}}, function(err) {
-					if (err) return console.error(err);
-					console.log('List successfully updated for the entry: ', req.params.docId);
+				// Update the list
+				api.updateRecentlyEditedEntries(entry, function(updatedList) {
 					res.redirect('back');
 				});
+			});
 		});
 	};
 
 	// Edit tidbit
 	var editTidbit = function(req, res) {
-		// Get current version of tidbit
-		db.Entry.findOne(
-			{ _id: req.params.docId, 'tidbits.docId': req.params.bitId },
-			{ _id: 0, 'tidbits.$': 1 },
-			function(err, result) {
-				if (err) return console.error(err);
-				if (result.tidbits.length > 0) {
-					console.log('Tidbit editing requested: ', result.tidbits[0]._id);
-					var tidbit = result.tidbits[0].toObject();
-					delete tidbit._id;
+		if (!Boolean(req.body.title.trim()) || !Boolean(req.body.year) || !Boolean(req.body.source.trim()) || !Boolean(req.body.note.trim())) res.redirect('back');
 
-					// New tidbit
-					var fakeUser = new mongoose.Types.ObjectId;
-					var fakeIp = '127.0.0.1';
+		// Find entry first
+		db.Entry.findOne({ _id: req.params.docId }, function(err, entry) {
+			if (err) return console.error(err);
+
+			// Find the tidbit
+			for (var i = 0; i < entry.tidbits.length; i++) {
+				if (entry.tidbits[i].docId == req.params.bitId) {
+					// Create new tidbit
 					var newTidbit = new db.Tidbit({
-						docId:			tidbit.docId,
-						v:				tidbit.v + 1,
-						momId:			req.params.docId,
+						docId:			entry.tidbits[i].docId,
+						v:				entry.tidbits[i].v + 1,
+						momId:			entry._id,
 						type:			'tidbit',
-						editorId:		fakeUser,
-						editorIp:		fakeIp,
+						editorId:		USER_TESTER,
+						editorIp:		req.ip,
 						note:			req.body.note.trim(),
 						title:			req.body.title.trim(),
 						description:	req.body.description.trim(),
-						// media:			req.body.media,
-						// mediaType:		req.body.mediaType,
-						source:			req.body.source,
+						source:			req.body.source.trim(),
 						timestamp:		createTimestamp(req).timestamp,
 						validTime:		createTimestamp(req).validTime,
-						status:			tidbit.status
+						status:			entry.tidbits[i].status
 					});
 
-					// Check if anything is updated
+					// Check if anything is actually updated
 					var isUpdated = function(a, b) {
 						if (a.title != b.title) return true;
 						if (a.description != b.description) return true;
@@ -359,40 +360,42 @@ module.exports = function(mongoose, db, slug) {
 						if (a.validTime != b.validTime) return true;
 						return false;
 					};
-					if (!isUpdated(tidbit, newTidbit)) {
+					if (!isUpdated(entry.tidbits[i], newTidbit)) {
 						console.log('Nothing really has been changed.');
 						return res.redirect('back');
 					}
 
 					// Copy current version of tidbit into history collection
-					var history = new db.History(tidbit);
-					history.timeOfCreation = new Date(result.tidbits[0]._id.getTimestamp());
+					var oldTidbit = entry.tidbits[i].toObject();
+					delete oldTidbit._id;
+					var history = new db.History(oldTidbit);
+					history.timeOfCreation = new Date(entry.tidbits[i]._id.getTimestamp());
 					history.save(function(err, history) {
 						if (err) return console.error(err);
 						console.log('Existing tidbit has successfully been copied to history: ', history._id);
 
 						// Replace current version of tidbit
-						db.Entry.update(
-							{ _id: req.params.docId, 'tidbits.docId': req.params.bitId },
-							{ $set: { 'tidbits.$': newTidbit } },
-							function(err) {
-								if (err) return console.error(err);
-								console.log('Tidbit successfully replaced with new one: ', newTidbit._id);
-
-								// Update the List
-								db.List.update({ 'entries.docId': tidbit.momId }, {'$set': {
-									'entries.$.lastEdit': new Date()
-								}}, function(err) {
-									if (err) return console.error(err);
-									console.log('List successfully updated for the entry: ', tidbit.momId);
-									res.redirect('back');
-								});
-							}
-						);
+						entry.tidbits.splice(i, 1, newTidbit);
+						entry.lastmodified = new Date();
+						entry.save(function(err, replacedEntry) {
+							if (err) return console.error(err);
+							api.updateRecentlyEditedEntries(replacedEntry, function(updatedList) {
+								res.redirect('back');
+							});
+						});
 					});
-				} else {
-					res.redirect('back');
+					return;
 				}
+			}
+			res.redirect('back');
+		});
+	};
+
+	// Remove tidbit
+	var removeTidbit = function(req, res) {
+		api.removeTidbit(req.params.docId, req.params.bitId, function(removedTidbit) {
+			
+			res.redirect('back');
 		});
 	};
 
@@ -404,18 +407,9 @@ module.exports = function(mongoose, db, slug) {
 			function(err, result) {
 				if (err) return console.error(err);
 				if (result.tidbits.length > 0) {
-					var currentVersion = result.tidbits[0];
-					db.History.find(
-						{ docId: currentVersion.docId },
-						null,
-						{ sort: { v: -1 } },
-						function(err, histories) {
-							if (err) return console.error(err);
-							// res.json({ history: histories });
-							histories.unshift(currentVersion);
-							res.render('history_tidbit', { history: histories });
-						}
-					);
+					api.getRevisionHistoryOfTidbit(result.tidbits[0], function(history) {
+						res.render('history_tidbit', { history: history });
+					});
 				} else {
 					res.redirect('back');
 				}
@@ -432,6 +426,7 @@ module.exports = function(mongoose, db, slug) {
 
 		createTidbit:	createTidbit,
 		editTidbit:		editTidbit,
+		removeTidbit:	removeTidbit,
 		tidbitHistory:	tidbitHistory
 	}
 };

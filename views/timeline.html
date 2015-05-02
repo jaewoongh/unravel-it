@@ -20,9 +20,15 @@
 				<h1><a href="/tl/{{ slug }}">{{ title }}</a></h1>
 				<summary>
 					{{#each summary}}
-						{{breaklines description}}
+						{{markdown description}}
 					{{/each}}
 				</summary>
+				<ul class="related-topics">
+					<!-- <h5>Related topics</h5> -->
+					{{#each_related related}}
+						<li class="related-topic" data-slug="{{ slug }}" data-point="{{ point }}">{{ title }}</li>
+					{{/each_related}}
+				</ul>
 
 				<!-- EDIT BAR -->
 				<!-- <div id="edit-entry">
@@ -66,7 +72,7 @@
 					{{/if}}
 					<div class="details">
 						<div class="description">
-							{{breaklines description}}
+							{{markdown description}}
 						</div>
 						<footer>
 							{{#if source}}
@@ -121,7 +127,7 @@
 	<div id="form-entry-info"><strong>something</strong></div>
 	<form id="form-entry-form" method="POST" autocomplete="off" accept-charset="UTF-8">
 		Edit summary/description<br>
-		<textarea id="summary" name="summary" rows="5" placeholder="Summary or brief description about the topic (optional)"></textarea><br>
+		<textarea id="summary" name="summary" rows="5" placeholder="Summary or brief description about the topic. (optional)"></textarea><br>
 		<span class="label" id="note-label-entry">Revision Note</span>
 		<input type="text" id="note-entry" name="note" title="Revision note" placeholder="What did you change and why must you? (required)" style="font-size:0.8em" required><br id="note-br-entry">
 		<button name="submit" id="submit-entry">Make change</button>

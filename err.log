@@ -1,12 +1,40 @@
 /root/unravelit/node_modules/express/lib/router/route.js:170
         throw new Error(msg);
               ^
-Error: Route.post() requires callback functions but got a [object Undefined]
+Error: Route.get() requires callback functions but got a [object Undefined]
     at Route.<anonymous> (/root/unravelit/node_modules/express/lib/router/route.js:170:15)
     at Array.forEach (native)
-    at Route.(anonymous function) [as post] (/root/unravelit/node_modules/express/lib/router/route.js:166:15)
+    at Route.(anonymous function) [as get] (/root/unravelit/node_modules/express/lib/router/route.js:166:15)
     at EventEmitter.app.(anonymous function) (/root/unravelit/node_modules/express/lib/application.js:465:19)
-    at Object.<anonymous> (/root/unravelit/app.js:61:5)
+    at Object.<anonymous> (/root/unravelit/app.js:79:5)
+    at Module._compile (module.js:460:26)
+    at Object.Module._extensions..js (module.js:478:10)
+    at Module.load (module.js:355:32)
+    at Function.Module._load (module.js:310:12)
+    at Function.Module.runMain (module.js:501:10)
+/root/unravelit/node_modules/express/lib/router/route.js:170
+        throw new Error(msg);
+              ^
+Error: Route.get() requires callback functions but got a [object Undefined]
+    at Route.<anonymous> (/root/unravelit/node_modules/express/lib/router/route.js:170:15)
+    at Array.forEach (native)
+    at Route.(anonymous function) [as get] (/root/unravelit/node_modules/express/lib/router/route.js:166:15)
+    at EventEmitter.app.(anonymous function) (/root/unravelit/node_modules/express/lib/application.js:465:19)
+    at Object.<anonymous> (/root/unravelit/app.js:79:5)
+    at Module._compile (module.js:460:26)
+    at Object.Module._extensions..js (module.js:478:10)
+    at Module.load (module.js:355:32)
+    at Function.Module._load (module.js:310:12)
+    at Function.Module.runMain (module.js:501:10)
+/root/unravelit/node_modules/express/lib/router/route.js:170
+        throw new Error(msg);
+              ^
+Error: Route.get() requires callback functions but got a [object Undefined]
+    at Route.<anonymous> (/root/unravelit/node_modules/express/lib/router/route.js:170:15)
+    at Array.forEach (native)
+    at Route.(anonymous function) [as get] (/root/unravelit/node_modules/express/lib/router/route.js:166:15)
+    at EventEmitter.app.(anonymous function) (/root/unravelit/node_modules/express/lib/application.js:465:19)
+    at Object.<anonymous> (/root/unravelit/app.js:79:5)
     at Module._compile (module.js:460:26)
     at Object.Module._extensions..js (module.js:478:10)
     at Module.load (module.js:355:32)

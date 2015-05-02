@@ -7,6 +7,12 @@ var resultCard;
 
 var setThings = function() {
 	resultSlip =  document.getElementById('result');
+	resultSlip.addEventListener('mousewheel', function(evt) {
+		if (Math.abs(evt.wheelDeltaX) < 10) {
+			this.scrollLeft -= (evt.wheelDeltaY * 0.8);
+			event.preventDefault();
+		}
+	});
 
 	elemLoading = document.createElement('div');
 	elemLoadingIcon = document.createElement('img');
@@ -50,11 +56,12 @@ var loadRecentItems = function() {
 
 		var result = JSON.parse(this.response);
 		if (Object.keys(result).length === 0) return;
-		for (var i = 0; i < result.result.length; i++) {
+		for (var i = 0; i < result.data.length; i++) {
+			if (result.data[i].status !== 'published') continue;
 			var item = document.createElement('a');
 			item.className = 'recent-item';
-			item.href = '/tl/' + result.result[i].slug;
-			item.innerHTML = result.result[i].title;
+			item.href = '/tl/' + result.data[i].slug;
+			item.innerHTML = result.data[i].title;
 			elemRecent.appendChild(item);
 		}
 	};
@@ -115,10 +122,12 @@ var showSearchResult = function() {
 
 	// Put search result into the page
 	elemResult.innerHTML = '';
-	for (var i = 0; i < result.result.length; i++) {
-		resultCard.title.innerHTML = result.result[i].entry.title;
-		resultCard.description.innerHTML = result.result[i].entry.summary[0].description;
-		resultCard.element.href = '/tl/' + result.result[i].entry.slug;
+	for (var i = 0; i < result.data.length; i++) {
+		resultCard.title.innerHTML = result.data[i].entry.title;
+		resultCard.title.title = result.data[i].entry.title;
+		resultCard.description.innerHTML = result.data[i].entry.summary[0].description;
+		resultCard.description.title = result.data[i].entry.summary[0].description;
+		resultCard.element.href = '/tl/' + result.data[i].entry.slug;
 		elemResult.appendChild(resultCard.element.cloneNode(true));
 	}
 

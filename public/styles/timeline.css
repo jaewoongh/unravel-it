@@ -31,6 +31,29 @@ article {
         text-decoration: none; }
       article header .inner-header h1 a:hover {
         color: #306a83; }
+    article header .inner-header .related-topics {
+      display: inline-block;
+      list-style-type: none;
+      padding: 0;
+      margin: 1.5em 0 0;
+      word-break: break-all; }
+      article header .inner-header .related-topics h5 {
+        display: inline;
+        font-weight: 500;
+        color: #b8c62a; }
+      article header .inner-header .related-topics .related-topic {
+        display: inline;
+        font-size: 0.8em;
+        margin: 0 0.3em 0 0;
+        padding: 0.2em 0.5em 0.15em;
+        border: solid 1px #b8c62a;
+        border-radius: 3px;
+        color: #b8c62a;
+        cursor: pointer;
+        transition: background 0.1s ease-out 0s, color 0.1s ease-out 0s; }
+      article header .inner-header .related-topics .related-topic:hover {
+        background: #b8c62a;
+        color: #ffffff; }
   article header .entry-iconset {
     position: absolute; }
     article header .entry-iconset .entry-icon {
@@ -231,7 +254,7 @@ article {
   width: 300px;
   padding-left: 48px;
   top: 0.5em;
-  min-height: 100%;
+  min-height: 600px;
   margin: 0.7em;
   margin-left: 0;
   overflow: hidden;

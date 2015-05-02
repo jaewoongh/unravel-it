@@ -9,7 +9,7 @@
 		this.element = element;
 		this.column = column;
 		this.header = this.element.getElementsByTagName('header')[0];
-		this.summary = this.element.getElementsByTagName('summary')[0].innerHTML.trim().replace(/\<br\>/g, '\n');
+		this.summary = this.element.getElementsByTagName('summary')[0].innerHTML.trim().replace(/\<br\>/g, '\n').replace(/<a.+href="\/tl\/(\S+)">(.+)<\/a>/igm, '[$2]($1)').replace(/\<br\>/g, '\n').replace(/<a.+href="(\S+)">(.+)<\/a>/igm, '[$2]($1)');
 		this.title = element.dataset.title;
 		this.id = element.dataset.id;
 		this.slug = element.dataset.slug;

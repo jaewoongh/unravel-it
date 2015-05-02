@@ -9,20 +9,22 @@
 		<li class="revision-history-item">
 			<div class="revision-history-what">{{ type }}/{{ status }}</div>
 			<div class="revision-history-version">Revision #{{ v }}</div>
-			{{#if @first}}
-				<div class="revision-history-when" data-timestamp="{{get_time _id}}">
-				{{get_time_formatted _id}}
-				</div>
-			{{else}}
+			{{#if timeOfCreation}}
 				<div class="revision-history-when" data-timestamp="{{ timeOfCreation }}">
 				{{format_time timeOfCreation}}
 				</div>
+			{{else}}
+				<div class="revision-history-when" data-timestamp="{{get_time _id}}">
+				{{get_time_formatted _id}}
+				</div>
 			{{/if}}
 			<div class="revision-history-note">{{ note }}</div>
-			<div class="revision-history-timestamp">{{month validTime timestamp}}{{date validTime timestamp}}{{year validTime timestamp}} {{hour validTime timestamp}}{{minute validTime timestamp}}{{second validTime timestamp}}{{millisecond validTime timestamp}}</div>
+			{{#if timestamp}}
+				<div class="revision-history-timestamp">{{month validTime timestamp}}{{date validTime timestamp}}{{year validTime timestamp}} {{hour validTime timestamp}}{{minute validTime timestamp}}{{second validTime timestamp}}{{millisecond validTime timestamp}}</div>
+			{{/if}}
 			<div class="revision-history-title">{{ title }}</div>
-			<div class="revision-history-description">{{breaklines description}}</div>
-			<div class="revision-history-source"><a href="http://asdf.asdf">{{ source }}</a></div>
+			<div class="revision-history-description">{{markdown description}}</div>
+			<div class="revision-history-source"><a href="{{ source }}">{{ source }}</a></div>
 		</li>
 	{{/each}}
 </ul>

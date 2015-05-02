@@ -6,13 +6,15 @@ module.exports = function(mongoose) {
 		docId:			ObjectId,	// ID/timestamp shared with current version and all history of this tidbit
 		v:				Number,		// Revision number (increment from 0)
 		momId:			ObjectId,	// Mother Entry's unique ID
-		type:			String,		// Either: tidbit,
-									//         entry-creation (for creating the entry),
-									//         entry-summary  (for changing entry summary),
-									//         entry-removal  (for removing the entry),
-									//         user-creation  (for creating the user),
-									//         user-photo     (for chaning user photo),
-									//         user-about     (for chaning user's about text)
+		type:			String,		// Either: tidbit			(for creating/editing the tidbit),
+									//         tidbit-removal	(for removing the tidbit),
+									//         entry-creation	(for creating the entry),
+									//         entry-summary	(for changing entry summary),
+									//         entry-removal	(for removing the entry),
+									//         entry-related	(for changing related topics),
+									//         user-creation	(for creating the user),
+									//         user-photo		(for chaning user photo),
+									//         user-about		(for chaning user's about text)
 
 		editorId:		ObjectId,	// User who made contribution
 		editorIp:		String,		// IP adress of the editor

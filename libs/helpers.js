@@ -2,14 +2,23 @@ module.exports = function(hbs, mongoose, db) {
 	// 'breaklines' helper that breaks lines (convert \r\n into <br />)
 	hbs.registerHelper('breaklines', function(text) {
 		text = hbs.Utils.escapeExpression(text);
-		text = text.replace(/(\r\n|\n\r)/gm, '<br />');
+		text = text.replace(/(\r\n|\n\r)/gm, '<br>');
+		return new hbs.SafeString(text);
+	});
+
+	// 'markdown' helper that implements basic link syntax as well as breaking lines
+	hbs.registerHelper('markdown', function(text) {
+		text = hbs.Utils.escapeExpression(text);
+		text = text.replace(/(\r\n|\n\r)/gm, '<br>');
+		text = text.replace(/\[(.+)\]\((https?\:\/\/\S+)\)/igm, '<a class="link-web" href="$2">$1</a>');
+		text = text.replace(/\[(.+)\]\((\S+)\)/igm, '<a class="link-slug" href="/tl/$2">$1</a>');
 		return new hbs.SafeString(text);
 	});
 	
 	// 'insert' helper for media insertion
 	hbs.registerHelper('insert', function(media, type) {
 		if (type == 'image') {
-			return new hbs.SafeString('<img src="/media/image/' + media + '" />');
+			return new hbs.SafeString('<img src="/media/image/' + media + '">');
 		} else if (type == 'movie') {
 			return 'Moooviiiiie';
 		} else {
@@ -61,6 +70,26 @@ module.exports = function(hbs, mongoose, db) {
 		for (var i = 0; i < tidbits.length; i++) {
 			if (tidbits[i].type != 'tidbit') continue;
 			ret = ret + block.fn(tidbits[i]);
+		}
+		return ret;
+	});
+
+	// Enhanced 'each' block for showing related topics of entry
+	hbs.registerHelper('each_related', function(related, block) {
+		if (related == undefined) return '';
+		var minPointToShow = 5;
+		var maxTopicsToShow = 5;
+
+		// Sort related topics by points
+		related.sort(function(a, b) {
+			return b.point - a.point;
+		});
+
+		// Make new block
+		var ret = '';
+		for (var i = 0; i < Math.min(maxTopicsToShow, related.length); i++) {
+			if (related[i].point < minPointToShow) break;
+			ret = ret + block.fn(related[i]);
 		}
 		return ret;
 	});

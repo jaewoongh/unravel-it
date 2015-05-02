@@ -77,7 +77,8 @@
   #result a {
     text-decoration: none; }
     #result a .result-card {
-      display: inline-table;
+      display: inline-block;
+      vertical-align: bottom;
       width: 15em;
       height: 10em;
       margin: 0.5em;
@@ -95,13 +96,15 @@
         font-weight: 500;
         height: 3em;
         margin: 0;
-        padding: 0; }
+        padding: 0;
+        overflow: hidden; }
       #result a .result-card p {
         font-size: 0.9em;
         font-family: sans-serif;
         margin: 0.5em 0 0;
         padding: 0;
-        color: #000000; }
+        color: #000000;
+        overflow: hidden; }
     #result a .result-card:hover {
       border-color: #306a83;
       transition: border-color 0.1s ease-out 0s; }

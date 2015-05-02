@@ -12,3 +12,86 @@ MongoDB successfully connected
 ██║   ██║██║╚██╗██║██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚════╝██║   ██║   
 ╚██████╔╝██║ ╚████║██║  ██║██║  ██║ ╚████╔╝ ███████╗███████╗ ██║   ██║   
  ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚══════╝ ╚═╝   ╚═╝   
+Server listening for HTTP connection on port 4444
+MongoDB successfully connected
+Entry search request: a|b|c|d
+Entry search request: a|b|c|d
+Entry search request: a|b|c|d
+Entry search request: a|b|c|d
+Entry search request: a|b|c|d
+Entry search request: a|b|c|d
+New entry creation requested.
+New entry has been created: really-really-long-title-test-is-being-done-right-now-to-test-how-would-it-look-in-search-result-page (55402db7beb0a9b52f2af35f)
+New entry marker has been added to history: 55402db7beb0a9b52f2af364
+Updated recently edited entries: 55402db7beb0a9b52f2af35f
+Entry search request: r
+Entry editing requested:  55402db7beb0a9b52f2af35f
+Existing entry successfully copied to history:  55402dd0beb0a9b52f2af368
+Entry successfully updated: 55402db7beb0a9b52f2af35f
+Updated recently edited entries: 55402db7beb0a9b52f2af35f
+Entry search request: r
+Entry search request: r
+Entry search request: really
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: r
+Entry search request: rea
+Entry search request: r
+Entry search request: r
+Entry search request: a
+Entry search request: a|b|c|d|e|f|g
+Entry search request: r
+██╗   ██╗███╗   ██╗██████╗  █████╗ ██╗   ██╗███████╗██╗      ██╗████████╗
+██║   ██║████╗  ██║██╔══██╗██╔══██╗██║   ██║██╔════╝██║      ██║╚══██╔══╝
+██║   ██║██╔██╗ ██║██████╔╝███████║██║   ██║█████╗  ██║█████╗██║   ██║   
+██║   ██║██║╚██╗██║██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚════╝██║   ██║   
+╚██████╔╝██║ ╚████║██║  ██║██║  ██║ ╚████╔╝ ███████╗███████╗ ██║   ██║   
+ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚══════╝ ╚═╝   ╚═╝   
+Server listening for HTTP connection on port 4444
+MongoDB successfully connected
+██╗   ██╗███╗   ██╗██████╗  █████╗ ██╗   ██╗███████╗██╗      ██╗████████╗
+██║   ██║████╗  ██║██╔══██╗██╔══██╗██║   ██║██╔════╝██║      ██║╚══██╔══╝
+██║   ██║██╔██╗ ██║██████╔╝███████║██║   ██║█████╗  ██║█████╗██║   ██║   
+██║   ██║██║╚██╗██║██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚════╝██║   ██║   
+╚██████╔╝██║ ╚████║██║  ██║██║  ██║ ╚████╔╝ ███████╗███████╗ ██║   ██║   
+ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚══════╝ ╚═╝   ╚═╝   
+██╗   ██╗███╗   ██╗██████╗  █████╗ ██╗   ██╗███████╗██╗      ██╗████████╗
+██║   ██║████╗  ██║██╔══██╗██╔══██╗██║   ██║██╔════╝██║      ██║╚══██╔══╝
+██║   ██║██╔██╗ ██║██████╔╝███████║██║   ██║█████╗  ██║█████╗██║   ██║   
+██║   ██║██║╚██╗██║██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚════╝██║   ██║   
+╚██████╔╝██║ ╚████║██║  ██║██║  ██║ ╚████╔╝ ███████╗███████╗ ██║   ██║   
+ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚══════╝ ╚═╝   ╚═╝   
+██╗   ██╗███╗   ██╗██████╗  █████╗ ██╗   ██╗███████╗██╗      ██╗████████╗
+██║   ██║████╗  ██║██╔══██╗██╔══██╗██║   ██║██╔════╝██║      ██║╚══██╔══╝
+██║   ██║██╔██╗ ██║██████╔╝███████║██║   ██║█████╗  ██║█████╗██║   ██║   
+██║   ██║██║╚██╗██║██╔══██╗██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚════╝██║   ██║   
+╚██████╔╝██║ ╚████║██║  ██║██║  ██║ ╚████╔╝ ███████╗███████╗ ██║   ██║   
+ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚══════╝ ╚═╝   ╚═╝   

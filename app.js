@@ -15,6 +15,10 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.enable('trust proxy');
+app.get('/ip', function(req, res) { res.send(req.ip) });
+app.get('/ips', function(req, res) { res.send(req.ips) });
+
 // Set up MongoDB with Mongoose
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/unravelit');
@@ -59,11 +63,16 @@ var api = require('./routes/api')(mongoose, schemaWrap);
 app.get('/api/search/entry/', api.searchEntries);
 app.get('/api/search/entry/:string', api.searchEntries);
 app.get('/api/recent/edited-entries/', api.recentlyEditedEntries);
-app.get('/api/recent/edited-entries/:num', api.recentlyEditedEntries);
+app.get('/api/recent/edited-entries/:num', api.recentlyEditedEntries);	// Maximum 100
+
+// Admin tools
+app.get('/admin/api/entrylist', api.adminEntryList);
+app.get('/admin/api/removeentry/', api.adminRemoveEntry);
+app.get('/admin/api/removeentry/:docId', api.adminRemoveEntry);
 
 // Timeline related pages
 var slug = require('slug');
-var timeline = require('./routes/timeline')(mongoose, schemaWrap, slug);
+var timeline = require('./routes/timeline')(mongoose, schemaWrap, slug, api);
 app.get('/tl/*', timeline.show);
 app.get('/entry/new', timeline.newEntry);
 app.post('/entry/new', timeline.createEntry);
@@ -71,6 +80,7 @@ app.post('/entry/:docId/edit', timeline.editEntry);
 app.get('/entry/:docId/history', timeline.entryHistory);
 app.post('/entry/:docId/tidbit/new', timeline.createTidbit);
 app.post('/entry/:docId/tidbit/:bitId/edit', timeline.editTidbit);
+app.get('/entry/:docId/tidbit/:bitId/remove', timeline.removeTidbit);
 app.get('/entry/:docId/tidbit/:bitId/history', timeline.tidbitHistory);
 
 // User related pages

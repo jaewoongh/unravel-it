@@ -22,8 +22,11 @@ module.exports = function(mongoose) {
 
 		photo:			String,		// Link to profile photo
 		about:			String,		// Some words about the user by himself
-		activity:		[ObjectId],	// User's activity history
+		
+		favorite:		[ObjectId],	// Favorite entries to revisit with ease
+		watch:			[ObjectId],	// Entries to watch on its changes
 
+		type:			String,		// Can be either: user, admin, moderator, tester
 		status:			String		// Can be either: active, blocked, withdrawn
 	});
 	return {

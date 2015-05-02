@@ -45,6 +45,37 @@ article {
 					color:				$color-main;
 				}
 			}
+
+			.related-topics {
+				display: 				inline-block;
+				list-style-type:		none;
+				padding:				0;
+				margin:					1.5em 0 0;
+				word-break: 			break-all;
+
+				h5 {
+					display: 			inline;
+					font-weight: 		500;
+					color:				$color-point;
+				}
+
+				.related-topic {
+					display:			inline;
+					font-size: 			0.8em;
+					margin:				0 0.3em 0 0;
+					padding:			0.2em 0.5em 0.15em;
+					border:				solid 1px $color-point;
+					border-radius: 		3px;
+					color:				$color-point;
+					cursor: 			pointer;
+					transition: 		background 0.1s ease-out 0s, color 0.1s ease-out 0s;
+				}
+
+				.related-topic:hover {
+					background:			$color-point;
+					color:				$color-background;
+				}
+			}
 		}
 
 		.entry-iconset {
@@ -316,7 +347,7 @@ article {
 	width:					300px;
 	padding-left:			48px;
 	top:					0.5em;
-	min-height:				100%;
+	min-height:				600px;
 	margin:					0.7em;
 	margin-left:			0;
 	overflow:				hidden;

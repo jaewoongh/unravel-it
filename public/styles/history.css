@@ -45,7 +45,7 @@ body {
       color: #ffffff;
       background: #306a83;
       margin: 0 -0.3em 0.5em -0.3em;
-      padding: 0.5em 0.5em 0.1em;
+      padding: 0.5em 0.5em 0.5em;
       clear: left;
       border-radius: 0.2em; }
     #revision-history-list .revision-history-item .revision-history-timestamp {

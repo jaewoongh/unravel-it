@@ -1,4 +1,12 @@
 module.exports = function(mongoose, db) {
+	var MAX_RECENT_ENTRY = 100;
+	var USER_TESTER = new mongoose.Types.ObjectId('5544907925288cde3905e0d1');
+	var USER_ADMIN = new mongoose.Types.ObjectId('554490b425288cde3905e0d3');
+
+	/*****************************
+	* DIRECT REQUEST FROM CLIENT *
+	*****************************/
+
 	// Search entries
 	var searchEntries = function(req, res) {
 		var searchString = req.params.string;
@@ -37,7 +45,7 @@ module.exports = function(mongoose, db) {
 		console.log('Entry search request: ' + regexString.slice(0, -1) + (regexStringExclude.length > 0 ? ' -(' + regexStringExclude.slice(0, -1) + ')' : ''));
 
 		// Begin search
-		db.Entry.find({title: regex}, function(err, entries) {
+		db.Entry.find({title: regex, status: 'published'}, function(err, entries) {
 			if (err) return console.error(err);
 
 			// Make final result
@@ -71,7 +79,7 @@ module.exports = function(mongoose, db) {
 			});
 
 			// Send the result
-			if (result.length > 0) res.json({result: result});
+			if (result.length > 0) res.json({data: result});
 			else res.json({});
 		});
 	};
@@ -84,15 +92,165 @@ module.exports = function(mongoose, db) {
 		// Fetch list data
 		db.List.findOne().exec(function(err, list) {
 			if (err) return console.error(err);
-			list.entries.sort(function(a, b) {
+			if (!Boolean(list)) return res.json({});
+			list.recentlyEditedEntries.sort(function(a, b) {
 				return b.lastEdit - a.lastEdit;
 			});
-			res.json({result: list.entries.slice(0, howMany)});
+			res.json({data: list.recentlyEditedEntries.slice(0, howMany)});
 		});
 	};
 
+	// Admin API - entry list
+	var adminEntryList = function(req, res) {
+		db.Entry.find({}, function(err, entries) {
+			if (err) return res.json({});
+			res.json({data: entries});
+		});
+	};
+
+	// Admin API - remove entry
+	var adminRemoveEntry = function(req, res) {
+		var docId = req.params.docId;
+		if (!Boolean(docId)) return res.json({});
+
+		removeEntry(docId, function(removedEntry) {
+			res.json({data: removedEntry});
+		});
+	};
+
+
+	/************************
+	* INDEPENDENT FUNCTIONS *
+	************************/
+
+	// Get revision history of an entry
+	var getRevisionHistoryOfEntry = function(entry, callback, options) {
+		options = options || {};
+		options.includeCurrent = options.includeCurrent || true;
+		options.includeChildren = options.includeChildren || true;
+		if (options.includeChildren) {
+			db.History.find(
+				{ momId: entry._id },
+				function(err, histories) {
+					if (err) return [];
+					if (options.includeCurrent) {
+						histories.push(entry.summary[0]);
+						histories = histories.concat(entry.tidbits);
+					}
+					histories.sort(function(a, b) {
+						return (b.timeOfCreation || b._id.getTimestamp()) - (a.timeOfCreation || a._id.getTimestamp());
+					});
+					if (typeof callback === 'function') callback(histories);
+					return histories;
+			});
+		} else {
+			db.History.find(
+				{ momId: entry._id, $or: [{type: 'entry-creation'}, {type: 'entry-summary'}, {type: 'entry-removal'}] },
+				null,
+				{ sort: { timeOfCreation: -1 } },
+				function(err, histories) {
+					if (err) return null;
+					if (options.includeCurrent) histories.unshift(entry.summary[0]);
+					if (typeof callback === 'function') callback(histories);
+					return histories;
+			});
+		}
+	};
+
+	// Get revision history of a tidbit
+	var getRevisionHistoryOfTidbit = function(tidbit, callback, options) {
+		options = options || {};
+		options.includeCurrent = options.includeCurrent || true;
+		db.History.find(
+			{ docId: tidbit.docId },
+			null,
+			{ sort: { v: -1 } },
+			function(err, histories) {
+				if (err) return null;
+				if (options.includeCurrent) histories.unshift(tidbit);
+				if (typeof callback === 'function') callback(histories);
+				return histories;
+		});
+	};
+
+	// Update recently edited entries list
+	var updateRecentlyEditedEntries = function(entry, callback) {
+		db.List.findOne({}, {'recentlyEditedEntries': 1}, function(err, list) {
+			if (err) return null;
+			if (!Boolean(list)) list = new db.List();
+			if (!Boolean(list.recentlyEditedEntries)) list.recentlyEditedEntries = [];
+
+			for (var i = 0; i < list.recentlyEditedEntries.length; i++) {
+				if (list.recentlyEditedEntries[i].slug == entry.slug) list.recentlyEditedEntries.splice(i, 1);
+			}
+			list.recentlyEditedEntries.unshift({
+				title:		entry.title,
+				slug:		entry.slug,
+				docId:		entry._id,
+				status:		entry.status,
+				lastEdit:	entry.lastmodified
+			});
+			list.recentlyEditedEntries.splice(MAX_RECENT_ENTRY);
+			list.save(function(err, updatedList) {
+				if (err) return null;
+				if (typeof callback === 'function') callback(updatedList);
+				return updatedList;
+			});
+		});
+	};
+
+	// Remove entry
+	var removeEntry = function(docId, callback) {
+		db.Entry.findOne({ _id: docId }, function(err, entry) {
+			if (err) return null;
+			if (entry.status === 'removed') return null;
+
+			// Create history
+			var removeHistory = new db.History({
+				timeOfCreation:	new Date(),
+				docId:			new mongoose.Types.ObjectId,
+				v:				0,
+				momId:			entry._id,
+				type:			'entry-removal',
+				editorId:		USER_ADMIN,
+				editorIp:		'aministrator',
+				related:		[],
+				note:			'Removed by admin',
+				title:			entry.title,
+				status:			'published'
+			});
+			removeHistory.save(function(err, history) {
+				if (err) return null;
+				entry.status = 'removed';
+				entry.save(function(err, removedEntry) {
+					if (err) return null;
+					updateRecentlyEditedEntries(removedEntry, function(updatedList) {
+						if (typeof callback === 'function') callback(removedEntry);
+						return removedEntry;
+					});
+				});
+			});
+		});
+	};
+
+	// Remove tidbit
+	var removeTidbit = function(docId, bitId, callback) {
+		
+	};
+
 	return {
-		searchEntries:			searchEntries,
-		recentlyEditedEntries:	recentlyEditedEntries
+		searchEntries:					searchEntries,
+		recentlyEditedEntries:			recentlyEditedEntries,
+
+		getRevisionHistoryOfEntry:		getRevisionHistoryOfEntry,
+		getRevisionHistoryOfTidbit:		getRevisionHistoryOfTidbit,
+
+		updateRecentlyEditedEntries:	updateRecentlyEditedEntries,
+
+		removeEntry:					removeEntry,
+		removeTidbit:					removeTidbit,
+
+		adminEntryList:					adminEntryList,
+		adminRemoveEntry:				adminRemoveEntry
 	}
 };

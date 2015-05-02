@@ -20,7 +20,7 @@
 		this.y = 0;
 		this.content = element.getElementsByClassName('content')[0];
 		this.detail = element.getElementsByClassName('details')[0];
-		this.description = element.getElementsByClassName('description')[0].innerHTML.trim().replace(/\<br\>/g, '\n');
+		this.description = element.getElementsByClassName('description')[0].innerHTML.trim().replace(/\<br\>/g, '\n').replace(/<a.+href="\/tl\/(\S+)">(.+)<\/a>/igm, '[$2]($1)').replace(/\<br\>/g, '\n').replace(/<a.+href="(\S+)">(.+)<\/a>/igm, '[$2]($1)');
 		this.folded = false;
 		this.history = element.getElementsByClassName('tidbit-icon history')[0];
 		this.edit = element.getElementsByClassName('tidbit-icon edit')[0];

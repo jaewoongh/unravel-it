@@ -111,7 +111,8 @@
 		text-decoration: 	none;
 
 		.result-card {
-			display: 		inline-table;
+			display: 		inline-block;
+			vertical-align:	bottom;
 			width:			15em;
 			height:			10em;
 			margin:			0.5em;
@@ -131,6 +132,7 @@
 				height:				3em;
 				margin:				0;
 				padding:			0;
+				overflow: 			hidden;
 			}
 
 			p {
@@ -139,6 +141,7 @@
 				margin:				0.5em 0 0;
 				padding:			0;
 				color:				$color-foreground;
+				overflow: 			hidden;
 			}
 		}
 

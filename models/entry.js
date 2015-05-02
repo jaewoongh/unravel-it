@@ -15,6 +15,12 @@ module.exports = function(mongoose, Tidbit) {
 
 		creatorId:		ObjectId,	// User ID(_id) who created the entry
 
+		related:		[{			// Related entries
+			title:		String,
+			slug:		String,
+			point:		Number		// Relation point: the higher the more related
+		}],
+
 		summary:		[Tidbit],	// A summary about the entry as a whole
 		tidbits:		[Tidbit],	// Tidbits of timeline data
 
