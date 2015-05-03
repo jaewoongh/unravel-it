@@ -1,0 +1,19 @@
+#center {
+  margin: 6em 0 3em;
+  text-align: center; }
+  #center #center-image {
+    display: inline-block;
+    margin: 0 0 2em; }
+  #center #center-text {
+    display: inline-block;
+    text-align: left;
+    width: 50%;
+    min-width: 15em;
+    max-width: 25em; }
+    #center #center-text h1 {
+      margin: 0 0 0.2em; }
+    #center #center-text p {
+      font-size: 1.2em;
+      margin: 0; }
+
+/*# sourceMappingURL=errorpage.css.map */

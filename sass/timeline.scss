@@ -289,6 +289,13 @@ article {
 						background-repeat:		no-repeat;
 						background-position:	center center;
 					}
+
+					.remove {
+						background:				url(/assets/images/icon-close.svg);
+						background-size:		1.5em 1.5em;
+						background-repeat:		no-repeat;
+						background-position:	center center;
+					}
 				}
 
 				.revision {
@@ -508,6 +515,8 @@ article {
 
 	#summary {
 		width:			97%;
+		font-family: 	sans-serif;	// Firefox somehow
+		font-weight: 	normal;
 	}
 
 	.label {
@@ -565,6 +574,8 @@ article {
 
 	#description {
 		width:			97%;
+		font-family: 	sans-serif;	// Firefox somehow
+		font-weight: 	normal;
 	}
 
 	.label {
@@ -585,6 +596,79 @@ article {
 	}
 
 	#submit {
+		width:			100%;
+	}
+
+	#form-tidbit-remove {
+		margin-top: 		-0.4em;
+
+		#remove {
+			width:			100%;
+			font-size:		0.6em;
+			color:			$color-darkshadow;
+			background:		$color-shade;
+			transition:		background 0.1s ease-out 0s, color 0.1s ease-out 0s;
+		}
+
+		#remove:hover {
+			color:			$color-shade;
+			background:		$color-foreground;
+		}
+
+		#remove-text {
+			font-size:		0.6em;
+			margin:			0;
+			color:			$color-darkshadow;
+		}
+	}
+}
+
+#form-tidbit-remove {
+	font-size:			1.2em;
+	position:			fixed;
+	display:			none;
+	width:				30em;
+	left:				calc(50% - 15em);
+	top:				25%;
+	margin:				0;
+	border:				solid 3px $color-main;
+	background:			$color-background;
+	padding:			0.5em 1.5em;
+	overflow-y: 		hidden;
+	white-space: 		normal;
+	// visibility:			hidden;
+	opacity:			0;
+	transition:			all 0.1s ease-out 0s;
+	box-shadow:			0 0 5px $color-darkshadow;
+
+	#form-tidbit-remove-info {
+		margin:			0 0 1em 0;
+		width:			90%;
+
+		p {
+			font-size:	1em;
+		}
+	}
+
+	#form-tidbit-remove-close {
+		position:		absolute;
+		right:			0;
+		top:			0;
+		width:			1.5em;
+		height:			1.5em;
+		text-align: 	center;
+		font-size:		1.5em;
+		color:			$color-main;
+		cursor:			pointer;
+	}
+
+	#tidbit-remove-note {
+		width:			97%;
+		font-family: 	sans-serif;	// Firefox somehow
+		font-weight: 	normal;
+	}
+
+	#remove {
 		width:			100%;
 	}
 }

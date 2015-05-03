@@ -276,7 +276,7 @@ var sortThings = function(reverse) {
 	timeDiffMin = Number.MAX_VALUE;
 	timeDiffMax = 0;
 	tidbits.sort(function(a, b) {
-		return reverse ? b.timestamp - a.timestamp : a.timestamp - b.timestamp;
+		return reverse ? a.timestamp - b.timestamp : b.timestamp - a.timestamp;
 	});
 
 	// Calculate minimum and maximum gap between adjacent tidbits
@@ -538,6 +538,18 @@ var setThings = function() {
 			document.getElementById('note').required = true;
 			document.getElementById('submit').innerHTML = 'Apply change';
 		}.bind(tidbits[i]));
+
+		// Remove tidbit button
+		tidbits[i].remove.addEventListener('click', function() {
+			var overlay = document.getElementById('overlay');
+			var removeTidbit = document.getElementById('form-tidbit-remove');
+			overlay.style.visibility = 'visible';
+			overlay.style.opacity = 1;
+			removeTidbit.style.display = 'block';
+			window.setTimeout(function() { this.style.opacity = 1; }.bind(removeTidbit), 10);
+			document.getElementById('tidbit-remove-note').value = '';
+			document.getElementById('form-tidbit-remove-form').action = '/entry/' + this.mom.id + '/tidbit/' + this.id + '/remove';
+		}.bind(tidbits[i]));
 	}
 
 	// Left bar icons - search and add
@@ -661,6 +673,15 @@ var setThings = function() {
 		overlay.style.opacity = 0;
 		window.setTimeout(function() { this.style.display = 'none'; }.bind(newTidbit), 110);
 		newTidbit.style.opacity = 0;
+	});
+
+	document.getElementById('form-tidbit-remove-close').addEventListener('click', function() {
+		var overlay = document.getElementById('overlay');
+		var removeTidbit = document.getElementById('form-tidbit-remove');
+		overlay.style.visibility = 'hidden';
+		overlay.style.opacity = 0;
+		window.setTimeout(function() { this.style.display = 'none'; }.bind(removeTidbit), 110);
+		removeTidbit.style.opacity = 0;
 	});
 
 	document.getElementById('revision-history-close').addEventListener('click', function() {

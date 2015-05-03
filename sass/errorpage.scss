@@ -1,0 +1,28 @@
+@import "variables.scss";
+
+#center {
+	margin:				6em 0 3em;
+	text-align:			center;
+
+	#center-image {
+		display: 		inline-block;
+		margin:			0 0 2em;
+	}
+
+	#center-text {
+		display: 		inline-block;
+		text-align: 	left;
+		width:			50%;
+		min-width: 		15em;
+		max-width: 		25em;
+
+		h1 {
+			margin:		0 0 0.2em;
+		}
+
+		p {
+			font-size: 	1.2em;
+			margin:		0;
+		}
+	}
+}

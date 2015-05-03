@@ -113,7 +113,7 @@ module.exports = function(mongoose, db) {
 		var docId = req.params.docId;
 		if (!Boolean(docId)) return res.json({});
 
-		removeEntry(docId, function(removedEntry) {
+		removeEntry(docId, {id: USER_ADMIN, ip: req.ip}, 'Removed via admin api call', function(removedEntry) {
 			res.json({data: removedEntry});
 		});
 	};
@@ -200,7 +200,7 @@ module.exports = function(mongoose, db) {
 	};
 
 	// Remove entry
-	var removeEntry = function(docId, callback) {
+	var removeEntry = function(docId, user, note, callback) {
 		db.Entry.findOne({ _id: docId }, function(err, entry) {
 			if (err) return null;
 			if (entry.status === 'removed') return null;
@@ -212,10 +212,10 @@ module.exports = function(mongoose, db) {
 				v:				0,
 				momId:			entry._id,
 				type:			'entry-removal',
-				editorId:		USER_ADMIN,
-				editorIp:		'aministrator',
+				editorId:		user.id,
+				editorIp:		user.ip,
 				related:		[],
-				note:			'Removed by admin',
+				note:			note,
 				title:			entry.title,
 				status:			'published'
 			});
@@ -234,8 +234,55 @@ module.exports = function(mongoose, db) {
 	};
 
 	// Remove tidbit
-	var removeTidbit = function(docId, bitId, callback) {
-		
+	var removeTidbit = function(docId, bitId, user, note, callback) {
+		db.Entry.findOne({ _id: docId }, function(err, entry) {
+			if (err) return null;
+			if (entry.status === 'removed') return null;
+
+			// Find and remove-flag tidbit
+			for (var i = 0; i < entry.tidbits.length; i++) {
+				if (entry.tidbits[i].docId != bitId) continue;
+
+				// Move old tidbit to history
+				var oldTidbit = entry.tidbits[i].toObject();
+				delete oldTidbit._id;
+				var history = new db.History(oldTidbit);
+				history.timeOfCreation = entry.tidbits[i]._id.getTimestamp();
+				history.save(function(err, savedHistory) {
+					if (err) console.error(err);
+					if (err) return null;
+
+					// Create new tidbit
+					var newTidbit = new db.Tidbit({
+						docId:			entry.tidbits[i].docId,
+						v:				entry.tidbits[i].v + 1,
+						momId:			entry._id,
+						type:			'tidbit-removal',
+						editorId:		user.id,
+						editorIp:		user.ip,
+						note:			note,
+						title:			entry.tidbits[i].title,
+						description:	entry.tidbits[i].description,
+						source:			entry.tidbits[i].source,
+						timestamp:		entry.tidbits[i].timestamp,
+						validTime:		entry.tidbits[i].validTime,
+						status:			'removed'
+					});
+
+					// Replace tidbit and save the entry
+					entry.tidbits.splice(i, 1, newTidbit);
+					entry.lastmodified = new Date();
+					entry.save(function(err, replacedEntry) {
+						if (err) return console.error(err);
+						updateRecentlyEditedEntries(replacedEntry, function(updatedList) {
+							if (typeof callback === 'function') callback(newTidbit);
+							return newTidbit;
+						});
+					});
+				});
+				break;
+			}
+		});
 	};
 
 	return {

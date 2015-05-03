@@ -10,8 +10,8 @@ module.exports = function(hbs, mongoose, db) {
 	hbs.registerHelper('markdown', function(text) {
 		text = hbs.Utils.escapeExpression(text);
 		text = text.replace(/(\r\n|\n\r)/gm, '<br>');
-		text = text.replace(/\[(.+)\]\((https?\:\/\/\S+)\)/igm, '<a class="link-web" href="$2">$1</a>');
-		text = text.replace(/\[(.+)\]\((\S+)\)/igm, '<a class="link-slug" href="/tl/$2">$1</a>');
+		text = text.replace(/\[([^\]]+)\]\((https?\:\/\/\S+)\)/igm, '<a class="link-web" href="$2">$1</a>');
+		text = text.replace(/\[([^\]]+)\]\((\S+)\)/igm, '<a class="link-slug" href="/tl/$2">$1</a>');
 		return new hbs.SafeString(text);
 	});
 	

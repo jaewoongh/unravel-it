@@ -83,6 +83,7 @@
 							<div class="tidbit-iconset">
 								<div class="tidbit-icon history" title="Revision history"></div>
 								<div class="tidbit-icon edit" title="Edit this tidbit"></div>
+								<div class="tidbit-icon remove" title="Remove this tidbit"></div>
 							</div>
 							<div class="revision">
 								Revision #{{ v }}
@@ -158,6 +159,20 @@
 		<button name="submit" id="submit">Add</button>
 	</form>
 	<div id="form-tidbit-close" title="Close">✕</div>
+</div>
+
+<!-- REMOVE TIDBIT FORM -->
+<div id="form-tidbit-remove">
+	<div id="form-tidbit-remove-info">
+		<h3>Are you sure to remove this tidbit?</h3>
+		<p>Remove tidbit only when it is absolutely needed. If you have to, provide with good removal note.</p>
+	</div>
+	<form id="form-tidbit-remove-form" method="POST" autocomplete="off" accept-charset="UTF-8">
+		Removal Note<br>
+		<textarea id="tidbit-remove-note" name="note" rows="3" placeholder="Please elaborate why you have to remove this tidbit (required)" required></textarea><br>
+		<button name="submit" id="remove">Remove</button>
+	</form>
+	<div id="form-tidbit-remove-close" title="Close">✕</div>
 </div>
 
 <!-- REVISION HISTORY -->

@@ -213,6 +213,11 @@ article {
             background-size: 1.5em 1.5em;
             background-repeat: no-repeat;
             background-position: center center; }
+          article section .content .details .tidbit-iconset .remove {
+            background: url(/assets/images/icon-close.svg);
+            background-size: 1.5em 1.5em;
+            background-repeat: no-repeat;
+            background-position: center center; }
         article section .content .details .revision {
           display: inline-block;
           font-size: 0.4em;
@@ -381,7 +386,9 @@ article {
     color: #306a83;
     cursor: pointer; }
   #form-entry #summary {
-    width: 97%; }
+    width: 97%;
+    font-family: sans-serif;
+    font-weight: normal; }
   #form-entry .label {
     display: inline-block;
     width: 6.5em; }
@@ -422,7 +429,9 @@ article {
   #form-tidbit #title {
     width: 97%; }
   #form-tidbit #description {
-    width: 97%; }
+    width: 97%;
+    font-family: sans-serif;
+    font-weight: normal; }
   #form-tidbit .label {
     display: inline-block;
     width: 6.5em; }
@@ -433,6 +442,59 @@ article {
   #form-tidbit #source, #form-tidbit #note {
     width: 27.9em; }
   #form-tidbit #submit {
+    width: 100%; }
+  #form-tidbit #form-tidbit-remove {
+    margin-top: -0.4em; }
+    #form-tidbit #form-tidbit-remove #remove {
+      width: 100%;
+      font-size: 0.6em;
+      color: #888888;
+      background: #f5f5f5;
+      transition: background 0.1s ease-out 0s, color 0.1s ease-out 0s; }
+    #form-tidbit #form-tidbit-remove #remove:hover {
+      color: #f5f5f5;
+      background: #000000; }
+    #form-tidbit #form-tidbit-remove #remove-text {
+      font-size: 0.6em;
+      margin: 0;
+      color: #888888; }
+
+#form-tidbit-remove {
+  font-size: 1.2em;
+  position: fixed;
+  display: none;
+  width: 30em;
+  left: calc(50% - 15em);
+  top: 25%;
+  margin: 0;
+  border: solid 3px #306a83;
+  background: #ffffff;
+  padding: 0.5em 1.5em;
+  overflow-y: hidden;
+  white-space: normal;
+  opacity: 0;
+  transition: all 0.1s ease-out 0s;
+  box-shadow: 0 0 5px #888888; }
+  #form-tidbit-remove #form-tidbit-remove-info {
+    margin: 0 0 1em 0;
+    width: 90%; }
+    #form-tidbit-remove #form-tidbit-remove-info p {
+      font-size: 1em; }
+  #form-tidbit-remove #form-tidbit-remove-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+    font-size: 1.5em;
+    color: #306a83;
+    cursor: pointer; }
+  #form-tidbit-remove #tidbit-remove-note {
+    width: 97%;
+    font-family: sans-serif;
+    font-weight: normal; }
+  #form-tidbit-remove #remove {
     width: 100%; }
 
 #revision-history {

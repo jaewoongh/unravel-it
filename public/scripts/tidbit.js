@@ -24,6 +24,7 @@
 		this.folded = false;
 		this.history = element.getElementsByClassName('tidbit-icon history')[0];
 		this.edit = element.getElementsByClassName('tidbit-icon edit')[0];
+		this.remove = element.getElementsByClassName('tidbit-icon remove')[0];
 	};
 
 	// Move to the right position

@@ -11,12 +11,15 @@ module.exports = function(mongoose, db, slug, api) {
 					res.send('Invalid entry requested');
 					return console.error(err);
 				}
-				data.push(entry);
+				if (Boolean(entry)) data.push(entry);
 
 				// Recursively get data
 				if (++n < entries.length) {
 					load(entries, n);
 				} else {
+					// Check if there is no result
+					if (data.length <= 0) return res.status(404).render('404');
+
 					// When done getting data, add relation points
 					for (var i = 0; i < data.length - 1; i++) {
 						for (var j = i + 1; j < data.length; j++) {
@@ -393,8 +396,10 @@ module.exports = function(mongoose, db, slug, api) {
 
 	// Remove tidbit
 	var removeTidbit = function(req, res) {
-		api.removeTidbit(req.params.docId, req.params.bitId, function(removedTidbit) {
-			
+		var note = req.body.note.trim();
+		if (!Boolean(note)) return res.redirect('back');
+		if (note.length < 2) return res.redirect('back');
+		api.removeTidbit(req.params.docId, req.params.bitId, {id: USER_TESTER, ip: req.ip}, note, function(removedTidbit) {
 			res.redirect('back');
 		});
 	};

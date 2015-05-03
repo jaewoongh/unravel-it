@@ -15,9 +15,9 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.enable('trust proxy');
-app.get('/ip', function(req, res) { res.send(req.ip) });
-app.get('/ips', function(req, res) { res.send(req.ips) });
+app.enable('trust proxy', 'loopback');
+app.get('/test/ip', function(req, res) { res.send(req.ip) });
+app.get('/test/ips', function(req, res) { res.send(req.ips) });
 
 // Set up MongoDB with Mongoose
 var mongoose = require('mongoose');
@@ -80,7 +80,7 @@ app.post('/entry/:docId/edit', timeline.editEntry);
 app.get('/entry/:docId/history', timeline.entryHistory);
 app.post('/entry/:docId/tidbit/new', timeline.createTidbit);
 app.post('/entry/:docId/tidbit/:bitId/edit', timeline.editTidbit);
-app.get('/entry/:docId/tidbit/:bitId/remove', timeline.removeTidbit);
+app.post('/entry/:docId/tidbit/:bitId/remove', timeline.removeTidbit);
 app.get('/entry/:docId/tidbit/:bitId/history', timeline.tidbitHistory);
 
 // User related pages
@@ -92,6 +92,15 @@ app.get('/user/:username', function(req, res) {
 // Set static dir
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')))
+
+// Error pages
+app.use(function(req, res, next) {
+	res.status(404).render('404');
+});
+app.use(function(err, req, res, next) {
+	console.error(err.stack);
+	res.status(500).render('500')
+});
 
 // Listen!
 var port = process.env.PORT || 4444;
