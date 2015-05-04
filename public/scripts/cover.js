@@ -126,6 +126,7 @@ var showSearchResult = function() {
 		resultCard.title.innerHTML = result.data[i].entry.title;
 		resultCard.title.title = result.data[i].entry.title;
 		resultCard.description.innerHTML = result.data[i].entry.summary[0].description;
+		if (resultCard.description.innerHTML.length > 0) resultCard.description.innerHTML = resultCard.description.innerHTML.replace(/\[([^\]]+)\]\((\S+)\)/igm, '$1');
 		resultCard.description.title = result.data[i].entry.summary[0].description;
 		resultCard.element.href = '/tl/' + result.data[i].entry.slug;
 		elemResult.appendChild(resultCard.element.cloneNode(true));

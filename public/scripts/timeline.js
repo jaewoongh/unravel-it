@@ -221,6 +221,7 @@ var getThings = function() {
 		for (var i = 0; i < result.data.length; i++) {
 			leftSearchCard.resultCard.title.innerHTML = result.data[i].entry.title;
 			leftSearchCard.resultCard.description.innerHTML = result.data[i].entry.summary[0].description;
+			if (leftSearchCard.resultCard.description.innerHTML.length > 0) leftSearchCard.resultCard.description.innerHTML = leftSearchCard.resultCard.description.innerHTML.replace(/\[([^\]]+)\]\((\S+)\)/igm, '$1');
 			var currentSlugs = [];
 			for (var j = 0; j < entries.length; j++) {
 				currentSlugs[entries[j].column] = entries[j].slug;
