@@ -298,6 +298,7 @@ var setThings = function() {
 	// Entries
 	for (var i = 0; i < entries.length; i++) {
 		// Set transition for entries
+		entries[i].element.style.visibility = 'visible';
 		entries[i].element.style.transition = 'all 0.2s ease-out 0s';
 
 		// Shift to the left button
@@ -489,6 +490,8 @@ var setThings = function() {
 	// Tidbits
 	for (var i = 0; i < tidbits.length; i++) {
 		// Set transition for tidbits
+		tidbits[i].element.style.visibility = 'visible';
+		tidbits[i].detail.style.visibility = 'visible';
 		tidbits[i].element.style.transition = 'all 0.2s ease-out 0s';
 
 		// Click title of the tidbit to hide/show details

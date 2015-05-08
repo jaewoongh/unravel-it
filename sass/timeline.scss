@@ -11,6 +11,7 @@
 article {
 	position:				absolute;
 	display:				inline-block;
+	visibility:				hidden;
 	font-size:				1em;
 	box-sizing:				border-box;
 	width:					100%;
@@ -171,6 +172,7 @@ article {
 
 	section {
 		position:			absolute;
+		visibility: 		hidden;
 		box-sizing: 		border-box;
 		padding:			0.5em;
 		white-space: 		nowrap;
@@ -219,7 +221,7 @@ article {
 			}
 
 			.details {
-				visibility: 	visible;
+				visibility: 	hidden;
 				opacity: 		1;
 				transition:		all 0.1s ease-out 0s;
 				font-family: 	sans-serif;
@@ -326,6 +328,7 @@ article {
 }
 
 #credits {
+	display:		none;
 	position:		absolute;
 	top:			100%;
 	font-size:		0.8em;

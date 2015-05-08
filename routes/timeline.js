@@ -287,7 +287,7 @@ module.exports = function(mongoose, db, slug, api) {
 
 	// Create new tidbit
 	var createTidbit = function(req, res) {
-		if (!Boolean(req.body.title.trim()) || !Boolean(req.body.year) || !Boolean(req.body.source.trim())) res.redirect('back');
+		if (!Boolean(req.body.title.trim()) || !Boolean(req.body.year) || !Boolean(req.body.source.trim())) return res.redirect('back');
 
 		console.log('New tidbit requested.');
 		var newTidbit = new db.Tidbit({
