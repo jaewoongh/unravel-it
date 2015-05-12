@@ -551,7 +551,8 @@ article {
   overflow-y: scroll;
   background: #26252c;
   color: #ffffff;
-  box-shadow: 0 1px 5px #26252c; }
+  box-shadow: 0 1px 5px #26252c;
+  transition: transform 0.2s ease-out 0s, -webkit-transform 0.2s ease-out 0s; }
   #left-bar hr {
     width: 70%;
     border-color: #555555;

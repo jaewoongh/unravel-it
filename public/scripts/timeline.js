@@ -252,6 +252,29 @@ var getThings = function() {
 	// leftbar.expanded = document.getElementById('left-expanded');
 	// leftbar.folded = document.getElementById('left-folded');
 	// leftbar.isExpanded = true;
+	leftbar.isUp = true;
+	leftbar.show = function() {
+		leftbar.element.style.webkitTransform = 'translate3d(0,0,0)';
+		leftbar.element.style.transform = 'translate3d(0,0,0)';
+		leftSearchCard.element.style.webkitTransform = 'translate3d(-' + leftSearchCard.width + 'px,0,0)';
+		leftSearchCard.element.style.transform = 'translate3d(-' + leftSearchCard.width + 'px,0,0)';
+		leftbar.isUp = true;
+		placeEntries();
+	};
+	leftbar.hide = function() {
+		if (leftbar.autoHide) {
+			leftbar.autoHide = false;
+			window.clearTimeout(leftbar.autoHideTimer);
+		}
+		leftbar.element.style.webkitTransform = 'translate3d(-' + (LEFTBAR_WIDTH * 1.5) + 'px,0,0)';
+		leftbar.element.style.transform = 'translate3d(-' + (LEFTBAR_WIDTH * 1.5) + 'px,0,0)';
+		leftSearchCard.element.style.webkitTransform = 'translate3d(-' + (LEFTBAR_WIDTH * 1.5 + leftSearchCard.width) + 'px,0,0)';
+		leftSearchCard.element.style.transform = 'translate3d(-' + (LEFTBAR_WIDTH * 1.5 + leftSearchCard.width) + 'px,0,0)';
+		leftbar.isUp = false;
+		placeEntries();
+	};
+	leftbar.autoHide = true;
+	leftbar.autoHideTimer = window.setTimeout(leftbar.hide, 1000);
 	leftbar.icons = {};
 	leftbar.icons.search = document.getElementById('left-bar-icon-search');
 	leftbar.icons.createNew = document.getElementById('left-bar-icon-add');
@@ -660,6 +683,19 @@ var setThings = function() {
 		for (var i = 0; i < entries.length; i++) entries[i].placeSticky(viewZoomLevel);
 	});
 
+	// Mouse move event to fold/expand left bar
+	window.addEventListener('mousemove', function(evt) {
+		if (leftbar.isUp) {
+			if (evt.screenX > LEFTBAR_WIDTH * 2 && !leftSearchCard.isUp && !leftbar.autoHide) {
+				leftbar.hide();
+			}
+		} else {
+			if (evt.screenX < LEFTBAR_WIDTH * 0.5) {
+				leftbar.show();
+			}
+		}
+	});
+
 	// Close buttons
 	document.getElementById('form-entry-close').addEventListener('click', function() {
 		var overlay = document.getElementById('overlay');
@@ -717,7 +753,7 @@ var placeEntries = function(setHeight) {
 		entries[i].sticky.style.width = ((isOne ? ARTICLE_WIDTH_SINGLE : ARTICLE_WIDTH_MULTI) - help.em2px(ENTRY_MARGIN_INBETWEEN, entries[i].sticky) * 3 + 1) + 'px';
 		entries[i].y = help.em2px(ENTRY_MARGIN_TOP, entries[i].element);
 		// entries[i].x = entries[i].column * ARTICLE_WIDTH_MULTI + help.em2px(entries[i].column * ENTRY_MARGIN_INBETWEEN + ENTRY_MARGIN_LEFT, entries[i].element) + (leftbar.isExpanded ? LEFTBAR_WIDTH_EXPANDED : LEFTBAR_WIDTH_FOLDED);
-		entries[i].x = entries[i].column * ARTICLE_WIDTH_MULTI + help.em2px(entries[i].column * ENTRY_MARGIN_INBETWEEN + ENTRY_MARGIN_LEFT, entries[i].element) + LEFTBAR_WIDTH + (leftSearchCard.isUp ? leftSearchCard.width : 0);
+		entries[i].x = entries[i].column * ARTICLE_WIDTH_MULTI + help.em2px(entries[i].column * ENTRY_MARGIN_INBETWEEN + ENTRY_MARGIN_LEFT, entries[i].element) + (leftbar.isUp ? LEFTBAR_WIDTH : help.em2px((viewZoomLevel - 1) * 2.5, timelineView)) + (leftSearchCard.isUp ? leftSearchCard.width : 0);
 		if (setHeight) headerHeight = headerHeight > entries[i].header.offsetHeight ? headerHeight : entries[i].header.offsetHeight;
 	}
 
@@ -747,8 +783,8 @@ var updateScroller = function() {
 	// Set scrollbar appearance
 	// scrollbar.style.left = (leftbar.isExpanded ? LEFTBAR_WIDTH_EXPANDED : LEFTBAR_WIDTH_FOLDED) + 'px';
 	// scrollbar.style.width = 'calc(100% - ' + (leftbar.isExpanded ? LEFTBAR_WIDTH_EXPANDED : LEFTBAR_WIDTH_FOLDED) + 'px)';
-	scrollbar.style.left = LEFTBAR_WIDTH + 'px';
-	scrollbar.style.width = 'calc(100% - ' + LEFTBAR_WIDTH + 'px)';
+	scrollbar.style.left = (leftbar.isUp ? LEFTBAR_WIDTH : 0) + 'px';
+	scrollbar.style.width = 'calc(100% - ' + (leftbar.isUp ? LEFTBAR_WIDTH : 0) + 'px)';
 	if (window.scrollMaxX != undefined) {	// Damn Firefox
 		scroller.style.width = (scrollbar.offsetWidth * document.body.clientWidth / (window.scrollMaxX + document.body.clientWidth)) + 'px';
 		scroller.style.left = help.map(window.scrollX, 0, document.body.clientWidth, 0, scrollbar.offsetWidth) + 'px';
@@ -836,7 +872,7 @@ var placeTidbits = function() {
 		}
 
 		// Place credits div
-		credits.style.left = (LEFTBAR_WIDTH + help.em2px(1, credits)) + 'px';
+		credits.style.left = ((leftbar.isUp ? LEFTBAR_WIDTH : help.em2px((viewZoomLevel - 1) * 2.5, timelineView)) + help.em2px(1, credits)) + 'px';
 		credits.style.top = (entries[0].element.offsetTop + entries[0].element.offsetHeight + help.em2px(2, credits)) + 'px';
 	};
 	setArticleHeight();

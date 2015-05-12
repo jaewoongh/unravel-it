@@ -850,6 +850,7 @@ article {
 	background:			$color-dark;
 	color:				$color-background;
 	box-shadow:			0 1px 5px $color-dark;
+	transition:			transform 0.2s ease-out 0s, -webkit-transform 0.2s ease-out 0s;
 
 	hr {
 		width:			70%;
