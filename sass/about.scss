@@ -1,0 +1,212 @@
+@import "variables.scss";
+
+#top {
+	position:		absolute;
+	width:			100%;
+	top:			0;
+
+	#top-bar {
+		width:		100%;
+		height:		0.3em;
+		background:	$color-point;
+	}
+}
+
+section {
+	margin:				5em 0 2em;
+	text-align:			center;
+	white-space: 		normal;
+
+	h1 {
+		font-size:		2.8em;
+		font-family: 	"Exo", sans-serif;
+		font-weight: 	100;
+	}
+
+	ul {
+		display:			inline-block;
+		list-style-type:	none;
+		width:				70%;
+		min-width: 			600px;
+		padding: 			0;
+		vertical-align: 	top;
+
+		li {
+			display: 		inline-block;
+			margin:			1em 0;
+			font-size:		1.3em;
+			font-weight: 	100;
+
+			h3 {
+				margin:			0 0 0.3em 0;
+				font-size:		1.3em;
+				font-family: 	"Roboto", sans-serif;
+				font-weight: 	300;
+			}
+		}
+	}
+
+	#what-is-list {
+		text-align: 		left;
+
+		.what-is-list-item {
+			.what-is-list-item-image {
+				float:		left;
+				width:		10em;
+				height:		10em;
+				margin:		0.5em 0 0;
+				background:	$color-point;
+
+				img {
+					width:	100%;
+					height:	100%;
+				}
+			}
+
+			.what-is-list-item-text {
+				float:			left;
+				width:			calc(100% - 11.1em);
+				margin-left:	1em;
+				font-family: 	sans-serif;
+			}
+		}
+	}
+
+	#more-list {
+		text-align: 		center;
+		width:				100%;
+
+		.more-list-item {
+			text-align: 	center;
+			vertical-align:	top;
+			margin:			0 0.5em 2em;
+			width:			20%;
+			max-width: 		150px;
+
+			img {
+				display: 	inline-block;
+				width:		100px;
+				min-height:	100px;
+			}
+		}
+	}
+
+	#credits-list {
+		text-align: 		center;
+
+		.credits-list-item {
+			text-align: 	center;
+			vertical-align:	top;
+			margin:			0 1em 2em;
+			min-width: 		40%;
+
+			img {
+				display: 	inline-block;
+				width:		150px;
+				min-height:	150px;
+				background:	$color-point;
+			}
+
+			.credits-list-item-icons {
+
+				.icon {
+					display: 			inline-block;
+					margin:				0.5em 0.1em 0;
+					cursor:				pointer;
+					width:				32px;
+					height:				32px;
+					background:			$color-point;
+					-webkit-filter:		saturate(0) brightness(1.5);
+					filter:				saturate(0) brightness(1.5);
+					transition:			-webkit-filter 0.1s ease-out 0s, filter 0.1s ease-out 0s;
+				}
+
+				.icon:hover {
+					-webkit-filter:		hue-rotate(193deg) saturate(63%) brightness(1);
+					filter:				hue-rotate(193deg) saturate(63%) brightness(1);
+				}
+
+				.icon:active {
+					-webkit-transform:	scale(0.92);
+					transform:			scale(0.92);
+					-webkit-filter:		hue-rotate(193deg) saturate(63%) brightness(1);
+					filter:				hue-rotate(193deg) saturate(63%) brightness(1);
+				}
+
+				.icon-home {
+					background:				url(/assets/images/icon-export.svg);
+					background-size:		32px 32px;
+					background-repeat:		no-repeat;
+					background-position:	center center;
+				}
+
+				.icon-twitter {
+					background:				url(/assets/images/icon-twitter.svg);
+					background-size:		32px 32px;
+					background-repeat:		no-repeat;
+					background-position:	center center;
+				}
+
+				.icon-facebook {
+					background:				url(/assets/images/icon-facebook.svg);
+					background-size:		32px 32px;
+					background-repeat:		no-repeat;
+					background-position:	center center;
+				}
+
+				.icon-github {
+					background:				url(/assets/images/icon-github.svg);
+					background-size:		32px 32px;
+					background-repeat:		no-repeat;
+					background-position:	center center;
+				}
+			}
+		}
+	}
+
+	.view-explained-item {
+		display: 			inline-block;
+		text-align: 		left;
+		font-size:			1.3em;
+		width:				70%;
+		min-width: 			600px;
+
+		img {
+			display: 		block;
+			margin:			0 0 1em;
+			width:			100%;
+			min-height: 	500px;
+			background:		$color-point;
+		}
+
+		p {
+			margin:			0 0 0.5em;
+			padding-left:	1.3em;
+			text-indent:	-1.3em;
+		}
+
+		p::first-letter {
+			color:			$color-main;
+			font-size:		1.3em;
+		}
+	}
+
+	#credits-icons {
+		display: 			inline-block;
+		text-align: 		left;
+		font-size:			0.9em;
+		width:				70%;
+		min-width: 			600px;
+
+		hr {
+			width:			90%;
+			opacity: 		0.3;
+		}
+	}
+}
+
+#contacts {
+	p {
+		font-size:			1.3em;
+	}
+}

@@ -57,6 +57,7 @@ var hbsHelpers = require('./libs/helpers')(hbs, mongoose, schemaWrap);
 // Static pages
 var pages = require('./routes/pages')(mongoose, schemaWrap);
 app.get('/', pages.coverpage);
+app.get('/about', pages.aboutpage);
 
 // REST API
 var api = require('./routes/api')(mongoose, schemaWrap);

@@ -4,7 +4,13 @@ module.exports = function(mongoose, db) {
 		res.render('cover');
 	};
 
+	// About page
+	var aboutpage = function(req, res) {
+		res.render('about');
+	};
+
 	return {
-		coverpage:	coverpage
+		coverpage:	coverpage,
+		aboutpage:	aboutpage
 	}
 };
