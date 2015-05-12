@@ -274,7 +274,7 @@ var getThings = function() {
 		placeEntries();
 	};
 	leftbar.autoHide = true;
-	leftbar.autoHideTimer = window.setTimeout(leftbar.hide, 1000);
+	leftbar.autoHideTimer = window.setTimeout(leftbar.hide, 1500);
 	leftbar.icons = {};
 	leftbar.icons.search = document.getElementById('left-bar-icon-search');
 	leftbar.icons.createNew = document.getElementById('left-bar-icon-add');
